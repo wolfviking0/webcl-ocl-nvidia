@@ -6,10 +6,11 @@
 #  Copyright (c) 2013 Anthony Liot. All rights reserved.
 #
 
-#EMSCRIPTEN_PATH:=/Volumes/APPLE_MEDIA/WORKSPACE/webcl/webcl-translator/emscripten
-EMSCRIPTEN_PATH:=/Users/aliot/Desktop/webcl/webcl-translator/emscripten
+CURRENT_ROOT:=$(PWD)/
 
-CXX = $(EMSCRIPTEN_PATH)/em++
+EMSCRIPTEN_ROOT:=$(CURRENT_ROOT)../webcl-translator/emscripten
+
+CXX = $(EMSCRIPTEN_ROOT)/em++
 
 CHDIR_SHELL := $(SHELL)
 define chdir
@@ -43,8 +44,8 @@ else
 EXTENSION = js
 DEBUG = -O0 -s LEGACY_GL_EMULATION=1 -s CL_VALIDATOR=$(VAL) -s CL_VAL_PARAM=$(VALIDATOR) -s CL_PRINT_TRACE=1 -s DISABLE_EXCEPTION_CATCHING=0 -s WARN_ON_UNDEFINED_SYMBOLS=1 -s CL_DEBUG=1 -s CL_GRAB_TRACE=1 -s CL_CHECK_VALID_OBJECT=1 -s TOTAL_MEMORY=1024*1024*750 -DGPU_PROFILING
 NO_DEBUG = -03 -s LEGACY_GL_EMULATION=1 -s CL_VALIDATOR=$(VAL) -s CL_VAL_PARAM=$(VALIDATOR) -s WARN_ON_UNDEFINED_SYMBOLS=1 -s CL_DEBUG=0 -s CL_GRAB_TRACE=1 -s CL_PRINT_TRACE=0 -s CL_CHECK_VALID_OBJECT=0 -s TOTAL_MEMORY=1024*1024*750 -DGPU_PROFILING
-CXX = $(EMSCRIPTEN_PATH)/em++
-CC = $(EMSCRIPTEN_PATH)/emcc
+CXX = $(EMSCRIPTEN_ROOT)/em++
+CC = $(EMSCRIPTEN_ROOT)/emcc
 BUILD_FOLDER = build/
 $(info ************  Mode EMSCRIPTEN : Enabled ************)
 endif
@@ -69,7 +70,7 @@ $(info )
 #----------------------------------------------------------------------------------------#
 #----------------------------------------------------------------------------------------#
 common_part = \
-	-I$(EMSCRIPTEN_PATH)/system/include \
+	-I$(EMSCRIPTEN_ROOT)/system/include \
 	-I../../common/inc \
 	-I../../../shared/inc \
 	../../common/src/oclUtils.cpp \
