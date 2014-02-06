@@ -208,10 +208,25 @@ int runTest(const int argc, const char **argv)
         }
     }
      
+    int use_gpu = 0;
+    for(int i = 0; i < argc && argv; i++)
+    {
+        if(!argv[i])
+            continue;
+          
+        if(strstr(argv[i], "cpu"))
+            use_gpu = 0;        
+
+        else if(strstr(argv[i], "gpu"))
+            use_gpu = 1;
+    }
+
     // Get and log the device info
     shrLog("Running on...\n\n");
     devices = (cl_device_id*) malloc(sizeof(cl_device_id) * ciDeviceCount);
-    ciErrNum = clGetDeviceIDs (clSelectedPlatformID, CL_DEVICE_TYPE_GPU, ciDeviceCount, devices, &ciDeviceCount);
+
+
+    ciErrNum = clGetDeviceIDs (clSelectedPlatformID, use_gpu?CL_DEVICE_TYPE_GPU:CL_DEVICE_TYPE_CPU, ciDeviceCount, devices, &ciDeviceCount);
     for(int currentDevice = startDevice; currentDevice <= endDevice; currentDevice++)
     {
         oclPrintDevName(LOGBOTH, devices[currentDevice]);

@@ -67,6 +67,19 @@ int main(int argc, char **argv)
 
     shrQAStart(argc, argv);
 
+    int use_gpu = 0;
+    for(int i = 0; i < argc && argv; i++)
+    {
+        if(!argv[i])
+            continue;
+          
+        if(strstr(argv[i], "cpu"))
+            use_gpu = 0;        
+
+        else if(strstr(argv[i], "gpu"))
+            use_gpu = 1;
+    }
+
     // Get the NVIDIA platform
     ciErrNum = oclGetPlatformID(&cpPlatform);
     oclCheckErrorEX(ciErrNum, CL_SUCCESS, NULL);
@@ -77,10 +90,10 @@ int main(int argc, char **argv)
     cl_uint uiTargetDevice = 0;	        // Default Device to compute on
     cl_uint uiNumComputeUnits;          // Number of compute units (SM's on NV GPU)
     shrLog("Get the Device info and select Device...\n");
-    ciErrNum = clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, 0, NULL, &uiNumDevices);
+    ciErrNum = clGetDeviceIDs(cpPlatform, use_gpu?CL_DEVICE_TYPE_GPU:CL_DEVICE_TYPE_CPU, 0, NULL, &uiNumDevices);
     oclCheckErrorEX(ciErrNum, CL_SUCCESS, NULL);
     cdDevices = (cl_device_id *)malloc(uiNumDevices * sizeof(cl_device_id) );
-    ciErrNum = clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, uiNumDevices, cdDevices, NULL);
+    ciErrNum = clGetDeviceIDs(cpPlatform, use_gpu?CL_DEVICE_TYPE_GPU:CL_DEVICE_TYPE_CPU, uiNumDevices, cdDevices, NULL);
     oclCheckErrorEX(ciErrNum, CL_SUCCESS, NULL);
 
     // Get command line device options and config accordingly
@@ -123,7 +136,7 @@ int main(int argc, char **argv)
         oclCheckError(ciErrNum, CL_SUCCESS);
 
         // Get a GPU device
-        ciErrNum = clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, 1, &cdDevices[uiTargetDevice], NULL);
+        ciErrNum = clGetDeviceIDs(cpPlatform, use_gpu?CL_DEVICE_TYPE_GPU:CL_DEVICE_TYPE_CPU, 1, &cdDevices[uiTargetDevice], NULL);
         oclCheckError(ciErrNum, CL_SUCCESS);
 
         // Create the context
