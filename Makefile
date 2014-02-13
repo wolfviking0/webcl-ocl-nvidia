@@ -416,7 +416,7 @@ endif
 oclParticles_sample:
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclParticles/)
 	cp *.cl ../../../../build/out/
-	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
+	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) -s GL_DEBUG=0 \
 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclParticles.$(EXTENSION) \
 	-Iinc/ \
 	$(common_part) \

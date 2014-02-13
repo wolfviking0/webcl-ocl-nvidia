@@ -69,11 +69,11 @@ void ParticleRenderer::_drawPoints()
         glVertexPointer(4, GL_FLOAT, 0, 0);
         glEnableClientState(GL_VERTEX_ARRAY);                
 
-        if (m_colorVBO) {
+        /*if (m_colorVBO) {
             glBindBuffer(GL_ARRAY_BUFFER_ARB, m_colorVBO);
             glColorPointer(4, GL_FLOAT, 0, 0);
             glEnableClientState(GL_COLOR_ARRAY);
-        }
+        }*/
 
         glDrawArrays(GL_POINTS, 0, m_numParticles);
 

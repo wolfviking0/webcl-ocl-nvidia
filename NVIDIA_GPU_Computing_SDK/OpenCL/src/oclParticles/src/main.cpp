@@ -44,7 +44,7 @@
 #define MAX_EPSILON_ERROR 5.00f
 #define THRESHOLD         0.30f
 #define GRID_SIZE         64
-#define NUM_PARTICLES     16384
+#define NUM_PARTICLES     1024 * 4
 
 #define REFRESH_DELAY	  10 //ms
 
@@ -59,7 +59,7 @@ float camera_rot[]   = {0, 0, 0};
 float camera_trans_lag[] = {0, 0, -3};
 float camera_rot_lag[] = {0, 0, 0};
 const float inertia = 0.1f;
-ParticleRenderer::DisplayMode displayMode = ParticleRenderer::PARTICLE_SPHERES;
+ParticleRenderer::DisplayMode displayMode = ParticleRenderer::PARTICLE_POINTS;
 int mode = 0;
 bool displayEnabled = true;
 bool bPause = false;
@@ -74,8 +74,8 @@ int iGLUTWindowHandle;              // handle to the GLUT window
 int iGLUTMenuHandle;                // handle to the GLUT menu
 int iGraphicsWinPosX = 0;           // GLUT Window X location
 int iGraphicsWinPosY = 0;           // GLUT Window Y location
-int iGraphicsWinWidth = 1024;       // GLUT Window width
-int iGraphicsWinHeight = 768;       // GL Window height
+int iGraphicsWinWidth = 512;       // GLUT Window width
+int iGraphicsWinHeight = 512;       // GL Window height
 
 // Simulation parameters
 float timestep = 0.5f;              // time slice for re-computation iteration
@@ -440,7 +440,7 @@ void DisplayGL()
             {
                 static int iOption = 1;
                 ResetSim(++iOption);
-                if (iOption > 3)iOption = 0;
+                if (iOption > 2)iOption = 0;
             }
             iSetCount = 0;
         }
