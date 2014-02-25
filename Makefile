@@ -108,7 +108,7 @@ all_1: \
 	oclFDTD3d_sample \
 	oclHiddenMarkovModel_sample \
 
-all_2: \	
+all_2: \
 	oclHistogram_sample \
 	oclInlinePTX_sample \
 	oclMarchingCubes_sample \
@@ -121,7 +121,7 @@ all_2: \
 	oclPostprocessGL_sample \
 	oclQuasirandomGenerator_sample \
 	
-all_3: \	
+all_3: \
 	oclRadixSort_sample \
 	oclRecursiveGaussian_sample \
 	oclReduction_sample \
