@@ -93,7 +93,9 @@ common_part = \
 	../../../shared/src/cmd_arg_reader.cpp \
 	../../../shared/src/shrUtils.cpp \
 
-all: \
+all: all_1 all_2 all_3
+
+all_1: \
 	oclBandwidthTest_sample \
 	oclBlackScholes_sample \
 	oclBoxFilter_sample \
@@ -105,6 +107,8 @@ all: \
 	oclDXTCompression_sample \
 	oclFDTD3d_sample \
 	oclHiddenMarkovModel_sample \
+
+all_2: \	
 	oclHistogram_sample \
 	oclInlinePTX_sample \
 	oclMarchingCubes_sample \
@@ -116,6 +120,8 @@ all: \
 	oclParticles_sample \
 	oclPostprocessGL_sample \
 	oclQuasirandomGenerator_sample \
+	
+all_3: \	
 	oclRadixSort_sample \
 	oclRecursiveGaussian_sample \
 	oclReduction_sample \
