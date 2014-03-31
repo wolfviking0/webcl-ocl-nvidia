@@ -52,7 +52,7 @@ endif
 ifeq ($(NAT),1)
 EXTENSION = out
 DEBUG = -O0 -framework OpenCL -framework OpenGL -framework GLUT -framework CoreFoundation -framework IOKit -D__EMSCRIPTEN__ -DGPU_PROFILING -lGLEW
-NO_DEBUG = -02 -framework OpenCL -framework OpenGL -framework GLUT -framework CoreFoundation -framework IOKit -D__EMSCRIPTEN__ -DGPU_PROFILING -lGLEW
+NO_DEBUG = -O2 -framework OpenCL -framework OpenGL -framework GLUT -framework CoreFoundation -framework IOKit -D__EMSCRIPTEN__ -DGPU_PROFILING -lGLEW
 CXX = clang++
 CC = clang
 BUILD_FOLDER = build/out/
