@@ -96,28 +96,24 @@ $(info ************ EMSCRIPTEN : FAST_COMPILER = 0 ************)
 endif
 
 endif
-
 	
 SOURCES_common					= $(CURRENT_ROOT)/NVIDIA_GPU_Computing_SDK/OpenCL/common/src/oclUtils.cpp $(CURRENT_ROOT)//NVIDIA_GPU_Computing_SDK/shared/src/cmd_arg_reader.cpp $(CURRENT_ROOT)//NVIDIA_GPU_Computing_SDK/shared/src/shrUtils.cpp
 
 SOURCES_bandwidthtest			= $(SOURCES_common) oclBandwidthTest.cpp
 SOURCES_blackscholes			= $(SOURCES_common) src/main.cpp src/oclBlackScholes_gold.cpp src/oclBlackScholes_launcher.cpp
 SOURCES_boxfilter				= $(SOURCES_common) BoxFilterHost.cpp oclBoxFilter.cpp 
-SOURCES_convolutionseparable	= $(SOURCES_common)
-SOURCES_copycomputeoverlap		= $(SOURCES_common)
-SOURCES_dct8x8					= $(SOURCES_common)
-SOURCES_devicequery				= $(SOURCES_common)
-SOURCES_dotproduct				= $(SOURCES_common)
-SOURCES_dxtcompression			= $(SOURCES_common)
-SOURCES_fdtd3d					= $(SOURCES_common)
-SOURCES_hiddenmarkovmodel		= $(SOURCES_common)
-SOURCES_histogram				= $(SOURCES_common)
-SOURCES_inlineptx				= $(SOURCES_common)
-SOURCES_marchingcubes			= $(SOURCES_common)
-SOURCES_matrixmul				= $(SOURCES_common)
-SOURCES_matvecmul				= $(SOURCES_common)
-SOURCES_mersennetwister			= $(SOURCES_common)
-SOURCES_multithreads			= $(SOURCES_common)
+SOURCES_convolutionseparable	= $(SOURCES_common) src/main.cpp src/oclConvolutionSeparable_gold.cpp src/oclConvolutionSeparable_launcher.cpp 
+SOURCES_copycomputeoverlap		= $(SOURCES_common) oclCopyComputeOverlap.cpp
+SOURCES_dct8x8					= $(SOURCES_common) src/main.cpp src/oclDCT8x8_gold.cpp src/oclDCT8x8_launcher.cpp
+SOURCES_devicequery				= $(SOURCES_common) oclDeviceQuery.cpp
+SOURCES_dotproduct				= $(SOURCES_common) oclDotProduct.cpp
+SOURCES_dxtcompression			= $(SOURCES_common) block.cpp oclDXTCompression.cpp
+SOURCES_fdtd3d					= $(SOURCES_common) src/FDTD3dGPU.cpp src/FDTD3dReference.cpp src/oclFDTD3d.cpp
+SOURCES_hiddenmarkovmodel		= $(SOURCES_common) HMM.cpp oclHiddenMarkovModel.cpp ViterbiCPU.cpp
+SOURCES_histogram				= $(SOURCES_common) src/main.cpp src/oclHistogram_gold.cpp src/oclHistogram64_launcher.cpp src/oclHistogram256_launcher.cpp
+SOURCES_matrixmul				= $(SOURCES_common) matrixMul_gold.cpp oclMatrixMul.cpp 
+SOURCES_matvecmul				= $(SOURCES_common) oclMatVecMul.cpp
+SOURCES_mersennetwister			= $(SOURCES_common) src/genmtrand.cpp src/oclMersenneTwister_gold.cpp src/oclMersenneTwister.cpp 
 SOURCES_nbody					= $(SOURCES_common)
 SOURCES_particles				= $(SOURCES_common)
 SOURCES_postprocessgl			= $(SOURCES_common)
@@ -141,21 +137,18 @@ INCLUDES_common					= -I$(EMSCRIPTEN_ROOT)/system/include -I$(CURRENT_ROOT)/NVID
 INCLUDES_bandwidthtest			= $(INCLUDES_common)
 INCLUDES_blackscholes			= $(INCLUDES_common)
 INCLUDES_boxfilter				= $(INCLUDES_common)
-INCLUDES_convolutionseparable	= $(INCLUDES_common)
+INCLUDES_convolutionseparable	= $(INCLUDES_common) -I./inc/
 INCLUDES_copycomputeoverlap		= $(INCLUDES_common)
-INCLUDES_dct8x8					= $(INCLUDES_common)
+INCLUDES_dct8x8					= $(INCLUDES_common) -I./inc/
 INCLUDES_devicequery			= $(INCLUDES_common)
 INCLUDES_dotproduct				= $(INCLUDES_common)
 INCLUDES_dxtcompression			= $(INCLUDES_common)
-INCLUDES_fdtd3d					= $(INCLUDES_common)
+INCLUDES_fdtd3d					= $(INCLUDES_common) -I./inc/
 INCLUDES_hiddenmarkovmodel		= $(INCLUDES_common)
-INCLUDES_histogram				= $(INCLUDES_common)
-INCLUDES_inlineptx				= $(INCLUDES_common)
-INCLUDES_marchingcubes			= $(INCLUDES_common)
+INCLUDES_histogram				= $(INCLUDES_common) -I./inc/
 INCLUDES_matrixmul				= $(INCLUDES_common)
 INCLUDES_matvecmul				= $(INCLUDES_common)
-INCLUDES_mersennetwister		= $(INCLUDES_common)
-INCLUDES_multithreads			= $(INCLUDES_common)
+INCLUDES_mersennetwister		= $(INCLUDES_common) -I./inc/
 INCLUDES_nbody					= $(INCLUDES_common)
 INCLUDES_particles				= $(INCLUDES_common)
 INCLUDES_postprocessgl			= $(INCLUDES_common)
@@ -179,21 +172,18 @@ ifeq ($(NAT),0)
 KERNEL_bandwidthtest			= 
 KERNEL_blackscholes				= --preload-file BlackScholes.cl
 KERNEL_boxfilter				= --preload-file BoxFilter.cl --preload-file data/lenaRGB.ppm
-KERNEL_convolutionseparable		=
-KERNEL_copycomputeoverlap		=
-KERNEL_dct8x8					=
+KERNEL_convolutionseparable		= --preload-file ConvolutionSeparable.cl
+KERNEL_copycomputeoverlap		= --preload-file VectorHypot.cl
+KERNEL_dct8x8					= --preload-file DCT8x8.cl
 KERNEL_devicequery				=
-KERNEL_dotproduct				=
-KERNEL_dxtcompression			=
-KERNEL_fdtd3d					=
-KERNEL_hiddenmarkovmodel		=
-KERNEL_histogram				=
-KERNEL_inlineptx				=
-KERNEL_marchingcubes			=
-KERNEL_matrixmul				=
-KERNEL_matvecmul				=
-KERNEL_mersennetwister			=
-KERNEL_multithreads				=
+KERNEL_dotproduct				= --preload-file DotProduct.cl
+KERNEL_dxtcompression			= --preload-file DXTCompression.cl --preload-file data/lena_ref.dds --preload-file data/lena_std.ppm
+KERNEL_fdtd3d					= --preload-file FDTD3d.cl
+KERNEL_hiddenmarkovmodel		= --preload-file Viterbi.cl
+KERNEL_histogram				= --preload-file Histogram64.cl --preload-file Histogram256.cl
+KERNEL_matrixmul				= --preload-file matrixMul.cl  --preload-file matrixMul.hpp
+KERNEL_matvecmul				= --preload-file oclMatVecMul.cl
+KERNEL_mersennetwister			= --preload-file MersenneTwister.cl --preload-file data/MersenneTwister.dat --preload-file data/MersenneTwister.raw
 KERNEL_nbody					=
 KERNEL_particles				=
 KERNEL_postprocessgl			=
@@ -214,22 +204,19 @@ KERNEL_volumerender				=
 
 CFLAGS_bandwidthtest			= -s TOTAL_MEMORY=1024*1024*100
 CFLAGS_blackscholes				= -s TOTAL_MEMORY=1024*1024*100
-CFLAGS_boxfilter				=
-CFLAGS_convolutionseparable		=
-CFLAGS_copycomputeoverlap		=
-CFLAGS_dct8x8					=
+CFLAGS_boxfilter				= -s TOTAL_MEMORY=1024*1024*100 -s GL_FFP_ONLY=1 -s LEGACY_GL_EMULATION=1
+CFLAGS_convolutionseparable		= -s TOTAL_MEMORY=1024*1024*200
+CFLAGS_copycomputeoverlap		= -s TOTAL_MEMORY=1024*1024*200
+CFLAGS_dct8x8					= -s TOTAL_MEMORY=1024*1024*100
 CFLAGS_devicequery				=
-CFLAGS_dotproduct				=
+CFLAGS_dotproduct				= -s TOTAL_MEMORY=1024*1024*100
 CFLAGS_dxtcompression			=
-CFLAGS_fdtd3d					=
-CFLAGS_hiddenmarkovmodel		=
-CFLAGS_histogram				=
-CFLAGS_inlineptx				=
-CFLAGS_marchingcubes			=
+CFLAGS_fdtd3d					= -s TOTAL_MEMORY=1024*1024*700
+CFLAGS_hiddenmarkovmodel		= -s TOTAL_MEMORY=1024*1024*100
+CFLAGS_histogram				= -s TOTAL_MEMORY=1024*1024*100
 CFLAGS_matrixmul				=
-CFLAGS_matvecmul				=
-CFLAGS_mersennetwister			=
-CFLAGS_multithreads				=
+CFLAGS_matvecmul				= -s TOTAL_MEMORY=1024*1024*300
+CFLAGS_mersennetwister			= -s TOTAL_MEMORY=1024*1024*200
 CFLAGS_nbody					=
 CFLAGS_particles				=
 CFLAGS_postprocessgl			=
@@ -250,22 +237,19 @@ CFLAGS_volumerender				=
 
 VALPARAM_bandwidthtest			= 
 VALPARAM_blackscholes			= -s CL_VAL_PARAM='[""]'
-VALPARAM_boxfilter				= -s CL_VAL_PARAM='[""]'
-VALPARAM_convolutionseparable	= -s CL_VAL_PARAM='[""]'
-VALPARAM_copycomputeoverlap		= -s CL_VAL_PARAM='[""]'
-VALPARAM_dct8x8					= -s CL_VAL_PARAM='[""]'
+VALPARAM_boxfilter				= -s CL_VAL_PARAM='["-cl-fast-relaxed-math", "-D USETEXTURE"]'
+VALPARAM_convolutionseparable	= -s CL_VAL_PARAM='["-cl-fast-relaxed-math", "-D KERNEL_RADIUS:8", "-D ROWS_BLOCKDIM_X:16", "-D COLUMNS_BLOCKDIM_X:16", "-D ROWS_BLOCKDIM_Y:4", "-D COLUMNS_BLOCKDIM_Y:8", "-D ROWS_RESULT_STEPS:8", "-D COLUMNS_RESULT_STEPS:8", "-D ROWS_HALO_STEPS:1", "-D COLUMNS_HALO_STEPS:1"]'
+VALPARAM_copycomputeoverlap		= -s CL_VAL_PARAM='["-cl-fast-relaxed-math"]'
+VALPARAM_dct8x8					= -s CL_VAL_PARAM='["-cl-fast-relaxed-math"]'
 VALPARAM_devicequery			= -s CL_VAL_PARAM='[""]'
 VALPARAM_dotproduct				= -s CL_VAL_PARAM='[""]'
 VALPARAM_dxtcompression			= -s CL_VAL_PARAM='[""]'
-VALPARAM_fdtd3d					= -s CL_VAL_PARAM='[""]'
+VALPARAM_fdtd3d					= -s CL_VAL_PARAM='["-DRADIUS:4","-DMAXWORKX:32","-DMAXWORKY:8","-cl-fast-relaxed-math"]'
 VALPARAM_hiddenmarkovmodel		= -s CL_VAL_PARAM='[""]'
-VALPARAM_histogram				= -s CL_VAL_PARAM='[""]'
-VALPARAM_inlineptx				= -s CL_VAL_PARAM='[""]'
-VALPARAM_marchingcubes			= -s CL_VAL_PARAM='[""]'
+VALPARAM_histogram				= -s CL_VAL_PARAM='["-D LOG2_WARP_SIZE:5","-D WARP_COUNT:6","-D MERGE_WORKGROUP_SIZE:256"]'
 VALPARAM_matrixmul				= -s CL_VAL_PARAM='[""]'
 VALPARAM_matvecmul				= -s CL_VAL_PARAM='[""]'
 VALPARAM_mersennetwister		= -s CL_VAL_PARAM='[""]'
-VALPARAM_multithreads			= -s CL_VAL_PARAM='[""]'
 VALPARAM_nbody					= -s CL_VAL_PARAM='[""]'
 VALPARAM_particles				= -s CL_VAL_PARAM='[""]'
 VALPARAM_postprocessgl			= -s CL_VAL_PARAM='[""]'
@@ -288,22 +272,19 @@ else
 
 COPY_bandwidthtest				=  
 COPY_blackscholes				= cp BlackScholes.cl $(BUILD_FOLDER) &&
-COPY_boxfilter					= mkdir -p $(BUILD_FOLDER)/data/ && cp BoxFilter.cl $(BUILD_FOLDER) && cp data/lenaRGB.ppm $(BUILD_FOLDER)/data/
-COPY_convolutionseparable		=
-COPY_copycomputeoverlap			=
-COPY_dct8x8						=
+COPY_boxfilter					= mkdir -p $(BUILD_FOLDER)/data/ && cp BoxFilter.cl $(BUILD_FOLDER) && cp data/lenaRGB.ppm $(BUILD_FOLDER)/data/ &&
+COPY_convolutionseparable		= cp ConvolutionSeparable.cl $(BUILD_FOLDER) &&
+COPY_copycomputeoverlap			= cp VectorHypot.cl $(BUILD_FOLDER) &&
+COPY_dct8x8						= cp DCT8x8.cl $(BUILD_FOLDER) &&
 COPY_devicequery				=
-COPY_dotproduct					=
-COPY_dxtcompression				=
-COPY_fdtd3d						=
-COPY_hiddenmarkovmodel			=
-COPY_histogram					=
-COPY_inlineptx					=
-COPY_marchingcubes				=
-COPY_matrixmul					=
-COPY_matvecmul					=
-COPY_mersennetwister			=
-COPY_multithreads				=
+COPY_dotproduct					= cp DotProduct.cl $(BUILD_FOLDER) &&
+COPY_dxtcompression				= mkdir -p $(BUILD_FOLDER)/data/ && cp DXTCompression.cl $(BUILD_FOLDER) && cp data/lena_std.ppm $(BUILD_FOLDER)/data/ &&  cp data/lena_ref.dds $(BUILD_FOLDER)/data/ &&
+COPY_fdtd3d						= cp FDTD3d.cl $(BUILD_FOLDER) &&
+COPY_hiddenmarkovmodel			= cp Viterbi.cl $(BUILD_FOLDER) &&
+COPY_histogram					= cp Histogram64.cl $(BUILD_FOLDER) && cp Histogram256.cl $(BUILD_FOLDER) &&
+COPY_matrixmul					= cp matrixMul.cl $(BUILD_FOLDER) && cp matrixMul.hpp $(BUILD_FOLDER) && 
+COPY_matvecmul					= cp oclMatVecMul.cl $(BUILD_FOLDER) &&
+COPY_mersennetwister			= mkdir -p $(BUILD_FOLDER)/data/ && cp MersenneTwister.cl $(BUILD_FOLDER) && cp data/MersenneTwister.dat $(BUILD_FOLDER) && cp data/MersenneTwister.raw $(BUILD_FOLDER) && 
 COPY_nbody						=
 COPY_particles					=
 COPY_postprocessgl				=
@@ -330,11 +311,11 @@ endif
 all: \
 	all_1 all_2 all_3
 
-all_1: bandwidthtest blackscholes boxfilter convolutionseparable copycomputeoverlap dct8x8 devicequery	dotproduct dxtcompression fdtd3d hiddenmarkovmodel histogram				
+all_1: bandwidthtest_sample blackscholes_sample boxfilter_sample convolutionseparable_sample copycomputeoverlap_sample dct8x8_sample devicequery_sample dotproduct_sample dxtcompression_sample fdtd3d_sample
 
-all_2: inlineptx marchingcubes matrixmul matvecmul mersennetwister	multithreads nbody particles postprocessgl quasirandomgenerator radixsort recursivegaussian reduction				
+all_2: hiddenmarkovmodel_sample histogram_sample matrixmul_sample matvecmul_sample mersennetwister_sample
 
-all_3: scan simplegl simplemultigpu simpletexture3d sobelfilter sortingnetworks transpose tridiagonal vectoradd volumerender
+all_3: 
 
 # Create build folder is necessary))
 mkdir:
@@ -350,135 +331,123 @@ blackscholes_sample: mkdir
 
 boxfilter_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclBoxFilter/)
-	$(COPY_boxfilter)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_boxfilter)				$(INCLDUES_boxfilter)				$(SOURCES_boxfilter)				$(VALPARAM_boxfilter)				$(KERNEL_boxfilter)				-o $(BUILD_FOLDER)$(PREFIX)boxfilter$(EXTENSION)
+	$(COPY_boxfilter)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_boxfilter)				$(INCLUDES_boxfilter)				$(SOURCES_boxfilter)				$(VALPARAM_boxfilter)				$(KERNEL_boxfilter)				-o $(BUILD_FOLDER)$(PREFIX)boxfilter$(EXTENSION)
 
 convolutionseparable_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_convolutionseparable)	$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_convolutionseparable)	$(INCLDUES_convolutionseparable)	$(SOURCES_convolutionseparable)		$(VALPARAM_convolutionseparable)	$(KERNEL_convolutionseparable)	-o $(BUILD_FOLDER)$(PREFIX)convolutionseparable$(EXTENSION)
+	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclConvolutionSeparable/)
+	$(COPY_convolutionseparable)	$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_convolutionseparable)	$(INCLUDES_convolutionseparable)	$(SOURCES_convolutionseparable)		$(VALPARAM_convolutionseparable)	$(KERNEL_convolutionseparable)	-o $(BUILD_FOLDER)$(PREFIX)convolutionseparable$(EXTENSION)
 
 copycomputeoverlap_sample: mkdir
-	$(call chdirNVIDIA_GPU_Computing_SDK/OpenCL/src/,)
-	$(COPY_copycomputeoverlap)		$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_copycomputeoverlap)	$(INCLDUES_copycomputeoverlap)		$(SOURCES_copycomputeoverlap)		$(VALPARAM_copycomputeoverlap)		$(KERNEL_copycomputeoverlap)	-o $(BUILD_FOLDER)$(PREFIX)copycomputeoverlap$(EXTENSION)	
+	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclCopyComputeOverlap/)
+	$(COPY_copycomputeoverlap)		$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_copycomputeoverlap)	$(INCLUDES_copycomputeoverlap)		$(SOURCES_copycomputeoverlap)		$(VALPARAM_copycomputeoverlap)		$(KERNEL_copycomputeoverlap)	-o $(BUILD_FOLDER)$(PREFIX)copycomputeoverlap$(EXTENSION)	
 
 dct8x8_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_dct8x8)					$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_dct8x8)				$(INCLDUES_dct8x8)					$(SOURCES_dct8x8)					$(VALPARAM_dct8x8)					$(KERNEL_dct8x8)				-o $(BUILD_FOLDER)$(PREFIX)dct8x8$(EXTENSION)	
+	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclDCT8x8/)
+	$(COPY_dct8x8)					$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_dct8x8)				$(INCLUDES_dct8x8)					$(SOURCES_dct8x8)					$(VALPARAM_dct8x8)					$(KERNEL_dct8x8)				-o $(BUILD_FOLDER)$(PREFIX)dct8x8$(EXTENSION)	
 
 devicequery_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_devicequery)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_devicequery)			$(INCLDUES_devicequery)				$(SOURCES_devicequery)				$(VALPARAM_devicequery)				$(KERNEL_devicequery)			-o $(BUILD_FOLDER)$(PREFIX)devicequery$(EXTENSION)	
+	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclDeviceQuery/)
+	$(COPY_devicequery)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_devicequery)			$(INCLUDES_devicequery)				$(SOURCES_devicequery)				$(VALPARAM_devicequery)				$(KERNEL_devicequery)			-o $(BUILD_FOLDER)$(PREFIX)devicequery$(EXTENSION)	
 
 dotproduct_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_dotproduct)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_dotproduct)			$(INCLDUES_dotproduct)				$(SOURCES_dotproduct)				$(VALPARAM_dotproduct)				$(KERNEL_dotproduct)			-o $(BUILD_FOLDER)$(PREFIX)dotproduct$(EXTENSION)	
+	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclDotProduct/)
+	$(COPY_dotproduct)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_dotproduct)			$(INCLUDES_dotproduct)				$(SOURCES_dotproduct)				$(VALPARAM_dotproduct)				$(KERNEL_dotproduct)			-o $(BUILD_FOLDER)$(PREFIX)dotproduct$(EXTENSION)	
 
 dxtcompression_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_dxtcompression)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_dxtcompression)		$(INCLDUES_dxtcompression)			$(SOURCES_dxtcompression)			$(VALPARAM_dxtcompression)			$(KERNEL_dxtcompression)		-o $(BUILD_FOLDER)$(PREFIX)dxtcompression$(EXTENSION)	
+	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclDXTCompression/)
+	$(COPY_dxtcompression)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_dxtcompression)		$(INCLUDES_dxtcompression)			$(SOURCES_dxtcompression)			$(VALPARAM_dxtcompression)			$(KERNEL_dxtcompression)		-o $(BUILD_FOLDER)$(PREFIX)dxtcompression$(EXTENSION)	
 
 fdtd3d_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_fdtd3d)					$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_fdtd3d)				$(INCLDUES_fdtd3d)					$(SOURCES_fdtd3d)					$(VALPARAM_fdtd3d)					$(KERNEL_fdtd3d)				-o $(BUILD_FOLDER)$(PREFIX)fdtd3d$(EXTENSION)	
+	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclFDTD3d/)
+	$(COPY_fdtd3d)					$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_fdtd3d)				$(INCLUDES_fdtd3d)					$(SOURCES_fdtd3d)					$(VALPARAM_fdtd3d)					$(KERNEL_fdtd3d)				-o $(BUILD_FOLDER)$(PREFIX)fdtd3d$(EXTENSION)	
 
 hiddenmarkovmodel_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_hiddenmarkovmodel)		$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_hiddenmarkovmodel)		$(INCLDUES_hiddenmarkovmodel)		$(SOURCES_hiddenmarkovmodel)		$(VALPARAM_hiddenmarkovmodel)		$(KERNEL_hiddenmarkovmodel)		-o $(BUILD_FOLDER)$(PREFIX)hiddenmarkovmodel$(EXTENSION)
+	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclHiddenMarkovModel/)
+	$(COPY_hiddenmarkovmodel)		$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_hiddenmarkovmodel)		$(INCLUDES_hiddenmarkovmodel)		$(SOURCES_hiddenmarkovmodel)		$(VALPARAM_hiddenmarkovmodel)		$(KERNEL_hiddenmarkovmodel)		-o $(BUILD_FOLDER)$(PREFIX)hiddenmarkovmodel$(EXTENSION)
 
 histogram_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_histogram)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_histogram)				$(INCLDUES_histogram)				$(SOURCES_histogram)				$(VALPARAM_histogram)				$(KERNEL_histogram)				-o $(BUILD_FOLDER)$(PREFIX)histogram$(EXTENSION)
-
-inlineptx_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_inlineptx)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_inlineptx)				$(INCLDUES_inlineptx)				$(SOURCES_inlineptx)				$(VALPARAM_inlineptx)				$(KERNEL_inlineptx)				-o $(BUILD_FOLDER)$(PREFIX)inlineptx$(EXTENSION)
-
-marchingcubes_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_marchingcubes)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_marchingcubes)			$(INCLDUES_marchingcubes)			$(SOURCES_marchingcubes)			$(VALPARAM_marchingcubes)			$(KERNEL_marchingcubes)			-o $(BUILD_FOLDER)$(PREFIX)marchingcubes$(EXTENSION)
+	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclHistogram/)
+	$(COPY_histogram)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_histogram)				$(INCLUDES_histogram)				$(SOURCES_histogram)				$(VALPARAM_histogram)				$(KERNEL_histogram)				-o $(BUILD_FOLDER)$(PREFIX)histogram$(EXTENSION)
 
 matrixmul_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_matrixmul)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_matrixmul)				$(INCLDUES_matrixmul)				$(SOURCES_matrixmul)				$(VALPARAM_matrixmul)				$(KERNEL_matrixmul)				-o $(BUILD_FOLDER)$(PREFIX)matrixmul$(EXTENSION)
+	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclMatrixMul/)
+	$(COPY_matrixmul)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_matrixmul)				$(INCLUDES_matrixmul)				$(SOURCES_matrixmul)				$(VALPARAM_matrixmul)				$(KERNEL_matrixmul)				-o $(BUILD_FOLDER)$(PREFIX)matrixmul$(EXTENSION)
 
 matvecmul_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_matvecmul)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_matvecmul)				$(INCLDUES_matvecmul)				$(SOURCES_matvecmul)				$(VALPARAM_matvecmul)				$(KERNEL_matvecmul)				-o $(BUILD_FOLDER)$(PREFIX)matvecmul$(EXTENSION)
+	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclMatVecMul/)
+	$(COPY_matvecmul)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_matvecmul)				$(INCLUDES_matvecmul)				$(SOURCES_matvecmul)				$(VALPARAM_matvecmul)				$(KERNEL_matvecmul)				-o $(BUILD_FOLDER)$(PREFIX)matvecmul$(EXTENSION)
 
 mersennetwister_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_mersennetwister)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_mersennetwister)		$(INCLDUES_mersennetwister)			$(SOURCES_mersennetwister)			$(VALPARAM_mersennetwister)			$(KERNEL_mersennetwister)		-o $(BUILD_FOLDER)$(PREFIX)mersennetwister$(EXTENSION)	
-
-multithreads_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_multithreads)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_multithreads)			$(INCLDUES_multithreads)			$(SOURCES_multithreads)				$(VALPARAM_multithreads)			$(KERNEL_multithreads)			-o $(BUILD_FOLDER)$(PREFIX)multithreads$(EXTENSION)
+	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclMersenneTwister/)
+	$(COPY_mersennetwister)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_mersennetwister)		$(INCLUDES_mersennetwister)			$(SOURCES_mersennetwister)			$(VALPARAM_mersennetwister)			$(KERNEL_mersennetwister)		-o $(BUILD_FOLDER)$(PREFIX)mersennetwister$(EXTENSION)	
 
 nbody_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_nbody)					$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_nbody)					$(INCLDUES_nbody)					$(SOURCES_nbody)					$(VALPARAM_nbody)					$(KERNEL_nbody)					-o $(BUILD_FOLDER)$(PREFIX)nbody$(EXTENSION)
+	$(COPY_nbody)					$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_nbody)					$(INCLUDES_nbody)					$(SOURCES_nbody)					$(VALPARAM_nbody)					$(KERNEL_nbody)					-o $(BUILD_FOLDER)$(PREFIX)nbody$(EXTENSION)
 
 particles_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_particles)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_particles)				$(INCLDUES_particles)				$(SOURCES_particles)				$(VALPARAM_particles)				$(KERNEL_particles)				-o $(BUILD_FOLDER)$(PREFIX)particles$(EXTENSION)
+	$(COPY_particles)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_particles)				$(INCLUDES_particles)				$(SOURCES_particles)				$(VALPARAM_particles)				$(KERNEL_particles)				-o $(BUILD_FOLDER)$(PREFIX)particles$(EXTENSION)
 
 postprocessgl_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_postprocessgl)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_postprocessgl)			$(INCLDUES_postprocessgl)			$(SOURCES_postprocessgl)			$(VALPARAM_postprocessgl)			$(KERNEL_postprocessgl)			-o $(BUILD_FOLDER)$(PREFIX)postprocessgl$(EXTENSION)
+	$(COPY_postprocessgl)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_postprocessgl)			$(INCLUDES_postprocessgl)			$(SOURCES_postprocessgl)			$(VALPARAM_postprocessgl)			$(KERNEL_postprocessgl)			-o $(BUILD_FOLDER)$(PREFIX)postprocessgl$(EXTENSION)
 
 quasirandomgenerator_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_quasirandomgenerator)	$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_quasirandomgenerator)	$(INCLDUES_quasirandomgenerator)	$(SOURCES_quasirandomgenerator)		$(VALPARAM_quasirandomgenerator)	$(KERNEL_quasirandomgenerator)	-o $(BUILD_FOLDER)$(PREFIX)quasirandomgenerator$(EXTENSION)
+	$(COPY_quasirandomgenerator)	$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_quasirandomgenerator)	$(INCLUDES_quasirandomgenerator)	$(SOURCES_quasirandomgenerator)		$(VALPARAM_quasirandomgenerator)	$(KERNEL_quasirandomgenerator)	-o $(BUILD_FOLDER)$(PREFIX)quasirandomgenerator$(EXTENSION)
 
 radixsort_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_radixsort)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_radixsort)				$(INCLDUES_radixsort)				$(SOURCES_radixsort)				$(VALPARAM_radixsort)				$(KERNEL_radixsort)				-o $(BUILD_FOLDER)$(PREFIX)radixsort$(EXTENSION)
+	$(COPY_radixsort)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_radixsort)				$(INCLUDES_radixsort)				$(SOURCES_radixsort)				$(VALPARAM_radixsort)				$(KERNEL_radixsort)				-o $(BUILD_FOLDER)$(PREFIX)radixsort$(EXTENSION)
 
 recursivegaussian_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_recursivegaussian)		$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_recursivegaussian)		$(INCLDUES_recursivegaussian)		$(SOURCES_recursivegaussian)		$(VALPARAM_recursivegaussian)		$(KERNEL_recursivegaussian)		-o $(BUILD_FOLDER)$(PREFIX)recursivegaussian$(EXTENSION)
+	$(COPY_recursivegaussian)		$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_recursivegaussian)		$(INCLUDES_recursivegaussian)		$(SOURCES_recursivegaussian)		$(VALPARAM_recursivegaussian)		$(KERNEL_recursivegaussian)		-o $(BUILD_FOLDER)$(PREFIX)recursivegaussian$(EXTENSION)
 
 reduction_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_reduction)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_reduction)				$(INCLDUES_reduction)				$(SOURCES_reduction)				$(VALPARAM_reduction)				$(KERNEL_reduction)				-o $(BUILD_FOLDER)$(PREFIX)reduction$(EXTENSION)
+	$(COPY_reduction)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_reduction)				$(INCLUDES_reduction)				$(SOURCES_reduction)				$(VALPARAM_reduction)				$(KERNEL_reduction)				-o $(BUILD_FOLDER)$(PREFIX)reduction$(EXTENSION)
 
 scan_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_scan)					$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_scan)					$(INCLDUES_scan)					$(SOURCES_scan)						$(VALPARAM_scan)					$(KERNEL_scan)					-o $(BUILD_FOLDER)$(PREFIX)scan$(EXTENSION)
+	$(COPY_scan)					$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_scan)					$(INCLUDES_scan)					$(SOURCES_scan)						$(VALPARAM_scan)					$(KERNEL_scan)					-o $(BUILD_FOLDER)$(PREFIX)scan$(EXTENSION)
 
 simplegl_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_simplegl)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_simplegl)				$(INCLDUES_simplegl)				$(SOURCES_simplegl)					$(VALPARAM_simplegl)				$(KERNEL_simplegl)				-o $(BUILD_FOLDER)$(PREFIX)simplegl$(EXTENSION)
+	$(COPY_simplegl)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_simplegl)				$(INCLUDES_simplegl)				$(SOURCES_simplegl)					$(VALPARAM_simplegl)				$(KERNEL_simplegl)				-o $(BUILD_FOLDER)$(PREFIX)simplegl$(EXTENSION)
 
 simplemultigpu_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_simplemultigpu)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_simplemultigpu)		$(INCLDUES_simplemultigpu)			$(SOURCES_simplemultigpu)			$(VALPARAM_simplemultigpu)			$(KERNEL_simplemultigpu)		-o $(BUILD_FOLDER)$(PREFIX)simplemultigpu$(EXTENSION)	
+	$(COPY_simplemultigpu)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_simplemultigpu)		$(INCLUDES_simplemultigpu)			$(SOURCES_simplemultigpu)			$(VALPARAM_simplemultigpu)			$(KERNEL_simplemultigpu)		-o $(BUILD_FOLDER)$(PREFIX)simplemultigpu$(EXTENSION)	
 
 simpletexture3d_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_simpletexture3d)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_simpletexture3d)		$(INCLDUES_simpletexture3d)			$(SOURCES_simpletexture3d)			$(VALPARAM_simpletexture3d)			$(KERNEL_simpletexture3d)		-o $(BUILD_FOLDER)$(PREFIX)simpletexture3d$(EXTENSION)	
+	$(COPY_simpletexture3d)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_simpletexture3d)		$(INCLUDES_simpletexture3d)			$(SOURCES_simpletexture3d)			$(VALPARAM_simpletexture3d)			$(KERNEL_simpletexture3d)		-o $(BUILD_FOLDER)$(PREFIX)simpletexture3d$(EXTENSION)	
 
 sobelfilter_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_sobelfilter)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_sobelfilter)			$(INCLDUES_sobelfilter)				$(SOURCES_sobelfilter)				$(VALPARAM_sobelfilter)				$(KERNEL_sobelfilter)			-o $(BUILD_FOLDER)$(PREFIX)sobelfilter$(EXTENSION)	
+	$(COPY_sobelfilter)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_sobelfilter)			$(INCLUDES_sobelfilter)				$(SOURCES_sobelfilter)				$(VALPARAM_sobelfilter)				$(KERNEL_sobelfilter)			-o $(BUILD_FOLDER)$(PREFIX)sobelfilter$(EXTENSION)	
 
 sortingnetworks_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_sortingnetworks)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_sortingnetworks)		$(INCLDUES_sortingnetworks)			$(SOURCES_sortingnetworks)			$(VALPARAM_sortingnetworks)			$(KERNEL_sortingnetworks)		-o $(BUILD_FOLDER)$(PREFIX)sortingnetworks$(EXTENSION)	
+	$(COPY_sortingnetworks)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_sortingnetworks)		$(INCLUDES_sortingnetworks)			$(SOURCES_sortingnetworks)			$(VALPARAM_sortingnetworks)			$(KERNEL_sortingnetworks)		-o $(BUILD_FOLDER)$(PREFIX)sortingnetworks$(EXTENSION)	
 
 transpose_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_transpose)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_transpose)				$(INCLDUES_transpose)				$(SOURCES_transpose)				$(VALPARAM_transpose)				$(KERNEL_transpose)				-o $(BUILD_FOLDER)$(PREFIX)transpose$(EXTENSION)
+	$(COPY_transpose)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_transpose)				$(INCLUDES_transpose)				$(SOURCES_transpose)				$(VALPARAM_transpose)				$(KERNEL_transpose)				-o $(BUILD_FOLDER)$(PREFIX)transpose$(EXTENSION)
 
 tridiagonal_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_tridiagonal)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_tridiagonal)			$(INCLDUES_tridiagonal)				$(SOURCES_tridiagonal)				$(VALPARAM_tridiagonal)				$(KERNEL_tridiagonal)			-o $(BUILD_FOLDER)$(PREFIX)tridiagonal$(EXTENSION)	
+	$(COPY_tridiagonal)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_tridiagonal)			$(INCLUDES_tridiagonal)				$(SOURCES_tridiagonal)				$(VALPARAM_tridiagonal)				$(KERNEL_tridiagonal)			-o $(BUILD_FOLDER)$(PREFIX)tridiagonal$(EXTENSION)	
 
 vectoradd_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_vectoradd)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_vectoradd)				$(INCLDUES_vectoradd)				$(SOURCES_vectoradd)				$(VALPARAM_vectoradd)				$(KERNEL_vectoradd)				-o $(BUILD_FOLDER)$(PREFIX)vectoradd$(EXTENSION)
+	$(COPY_vectoradd)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_vectoradd)				$(INCLUDES_vectoradd)				$(SOURCES_vectoradd)				$(VALPARAM_vectoradd)				$(KERNEL_vectoradd)				-o $(BUILD_FOLDER)$(PREFIX)vectoradd$(EXTENSION)
 
 volumerender_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_volumerender)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_volumerender)			$(INCLDUES_volumerender)			$(SOURCES_volumerender)				$(VALPARAM_volumerender)			$(KERNEL_volumerender)			-o $(BUILD_FOLDER)$(PREFIX)volumerender$(EXTENSION)
+	$(COPY_volumerender)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_volumerender)			$(INCLUDES_volumerender)			$(SOURCES_volumerender)				$(VALPARAM_volumerender)			$(KERNEL_volumerender)			-o $(BUILD_FOLDER)$(PREFIX)volumerender$(EXTENSION)
 
 clean:
 	rm -rf bin/
@@ -491,218 +460,6 @@ clean:
 	rm -rf tmp/
 	$(EMSCRIPTEN_ROOT)/emcc --clear-cache
 	
-
-# ifeq ($(NAT),1)
-# oclBoxFilter_preload =
-# else
-# oclBoxFilter_preload = --preload-file BoxFilter.cl --preload-file data/lenaRGB.ppm
-# endif
-# oclBoxFilter_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclBoxFilter/)
-# 	cp *.cl ../../../../build/out/
-# 	cp -R data/ ../../../../build/out/data/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclBoxFilter.$(EXTENSION) \
-# 	$(common_part) \
-# 	BoxFilterHost.cpp \
-# 	oclBoxFilter.cpp \
-# 	$(oclBoxFilter_preload)
-
-# ifeq ($(NAT),1)
-# oclConvolutionSeparable_preload =
-# else
-# oclConvolutionSeparable_preload = --preload-file ConvolutionSeparable.cl
-# endif
-# oclConvolutionSeparable_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclConvolutionSeparable/)
-# 	cp *.cl ../../../../build/out/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclConvolutionSeparable.$(EXTENSION) \
-# 	-Iinc/ \
-# 	$(common_part) \
-# 	src/main.cpp \
-# 	src/oclConvolutionSeparable_gold.cpp \
-# 	src/oclConvolutionSeparable_launcher.cpp \
-# 	$(oclConvolutionSeparable_preload)
-
-# ifeq ($(NAT),1)
-# oclCopyComputeOverlap_preload =
-# else
-# oclCopyComputeOverlap_preload = --preload-file VectorHypot.cl
-# endif
-# oclCopyComputeOverlap_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclCopyComputeOverlap/)
-# 	cp *.cl ../../../../build/out/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclCopyComputeOverlap.$(EXTENSION) \
-# 	$(common_part) \
-# 	oclCopyComputeOverlap.cpp \
-# 	$(oclCopyComputeOverlap_preload)	
-
-# ifeq ($(NAT),1)
-# oclDCT8x8_preload =
-# else
-# oclDCT8x8_preload = --preload-file DCT8x8.cl
-# endif
-# oclDCT8x8_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclDCT8x8/)
-# 	cp *.cl ../../../../build/out/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclDCT8x8.$(EXTENSION) \
-# 	-Iinc/ \
-# 	$(common_part) \
-# 	src/main.cpp \
-# 	src/oclDCT8x8_gold.cpp \
-# 	src/oclDCT8x8_launcher.cpp \
-# 	$(oclDCT8x8_preload)
-
-# oclDeviceQuery_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclDeviceQuery/)
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclDeviceQuery.$(EXTENSION) \
-# 	$(common_part) \
-# 	oclDeviceQuery.cpp
-
-# ifeq ($(NAT),1)
-# oclDotProduct_preload =
-# else
-# oclDotProduct_preload = --preload-file DotProduct.cl
-# endif
-# oclDotProduct_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclDotProduct/)
-# 	cp *.cl ../../../../build/out/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclDotProduct.$(EXTENSION) \
-# 	$(common_part) \
-# 	oclDotProduct.cpp \
-# 	$(oclDotProduct_preload)	
-
-# ifeq ($(NAT),1)
-# oclDXTCompression_preload =
-# else
-# oclDXTCompression_preload = --preload-file DXTCompression.cl --preload-file data/lena_ref.dds --preload-file data/lena_std.ppm
-# endif
-# oclDXTCompression_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclDXTCompression/)
-# 	cp *.cl ../../../../build/out/
-# 	cp -R data/ ../../../../build/out/data/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclDXTCompression.$(EXTENSION) \
-# 	$(common_part) \
-# 	block.cpp \
-# 	oclDXTCompression.cpp \
-# 	$(oclDXTCompression_preload)	
-
-# ifeq ($(NAT),1)
-# oclFDTD3d_preload =
-# else
-# oclFDTD3d_preload = --preload-file FDTD3d.cl
-# endif
-# oclFDTD3d_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclFDTD3d/)
-# 	cp *.cl ../../../../build/out/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclFDTD3d.$(EXTENSION) \
-# 	-Iinc/ \
-# 	$(common_part) \
-# 	src/FDTD3dGPU.cpp \
-# 	src/FDTD3dReference.cpp \
-# 	src/oclFDTD3d.cpp \
-# 	$(oclFDTD3d_preload)	
-
-# ifeq ($(NAT),1)
-# oclHiddenMarkovModel_preload =
-# else
-# oclHiddenMarkovModel_preload = --preload-file Viterbi.cl
-# endif
-# oclHiddenMarkovModel_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclHiddenMarkovModel/)
-# 	cp *.cl ../../../../build/out/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclHiddenMarkovModel.$(EXTENSION) \
-# 	$(common_part) \
-# 	HMM.cpp \
-# 	oclHiddenMarkovModel.cpp \
-# 	ViterbiCPU.cpp \
-# 	$(oclHiddenMarkovModel_preload)	
-
-# ifeq ($(NAT),1)
-# oclHistogram_preload =
-# else
-# oclHistogram_preload = --preload-file Histogram64.cl --preload-file Histogram256.cl
-# endif
-# oclHistogram_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclHistogram/)
-# 	cp *.cl ../../../../build/out/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclHistogram.$(EXTENSION) \
-# 	-Iinc/ \
-# 	$(common_part) \
-# 	src/main.cpp \
-# 	src/oclHistogram_gold.cpp \
-# 	src/oclHistogram64_launcher.cpp \
-# 	src/oclHistogram256_launcher.cpp \
-# 	$(oclHistogram_preload)
-
-# ifeq ($(NAT),1)
-# oclInlinePTX_preload =
-# else
-# oclInlinePTX_preload = --preload-file inlinePTX.cl
-# endif
-# oclInlinePTX_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclInlinePTX/)
-# 	cp *.cl ../../../../build/out/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclInlinePTX.$(EXTENSION) \
-# 	$(common_part) \
-# 	oclInlinePTX.cpp \
-# 	$(oclInlinePTX_preload)
-
-# ifeq ($(NAT),1)
-# oclMarchingCubes_preload =
-# else
-# oclMarchingCubes_preload = --preload-file marchingCubes_kernel.cl --preload-file Scan.cl --preload-file data/Bucky.raw
-# endif
-# oclMarchingCubes_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclMarchingCubes/)
-# 	cp *.cl ../../../../build/out/
-# 	cp -R data/ ../../../../build/out/data/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclMarchingCubes.$(EXTENSION) \
-# 	$(common_part) \
-# 	oclMarchingCubes.cpp \
-# 	oclScan_launcher.cpp \
-# 	$(oclMarchingCubes_preload)
-
-# ifeq ($(NAT),1)
-# oclMatrixMul_preload =
-# else
-# oclMatrixMul_preload = --preload-file matrixMul.cl  --preload-file matrixMul.hpp
-# endif
-# oclMatrixMul_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclMatrixMul/)
-# 	cp *.cl ../../../../build/out/
-# 	cp matrixMul.hpp ../../../../build/out/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclMatrixMul.$(EXTENSION) \
-# 	$(common_part) \
-# 	matrixMul_gold.cpp \
-# 	oclMatrixMul.cpp \
-# 	$(oclMatrixMul_preload)
-
-# ifeq ($(NAT),1)
-# oclMatVecMul_preload =
-# else
-# oclMatVecMul_preload = --preload-file oclMatVecMul.cl
-# endif
-# oclMatVecMul_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclMatVecMul/)
-# 	cp *.cl ../../../../build/out/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclMatVecMul.$(EXTENSION) \
-# 	$(common_part) \
-# 	oclMatVecMul.cpp \
-# 	$(oclMatVecMul_preload)
 
 # ifeq ($(NAT),1)
 # oclMersenneTwister_preload =
@@ -721,24 +478,6 @@ clean:
 # 	src/oclMersenneTwister_gold.cpp \
 # 	src/oclMersenneTwister.cpp \
 # 	$(oclMersenneTwister_preload)
-
-# ifeq ($(NAT),1)
-# oclMultiThreads_preload =
-# else
-# oclMultiThreads_preload = --preload-file kernel.cl
-# endif
-# oclMultiThreads_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclMultiThreads/)
-# 	cp *.cl ../../../../build/out/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclMultiThreads.$(EXTENSION) \
-# 	-Iinc/ \
-# 	$(common_part) \
-# 	multithreading.cpp \
-# 	oclMultiThreads.cpp \
-# 	$(oclMultiThreads_preload)
-
-
 
 # ifeq ($(NAT),1)
 # oclNbody_preload =

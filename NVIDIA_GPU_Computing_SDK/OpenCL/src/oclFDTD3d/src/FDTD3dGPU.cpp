@@ -15,6 +15,8 @@
 #include <iostream>
 #include <algorithm>
 
+static int use_gpu=0;
+
 bool getTargetDeviceGlobalMemSize(memsize_t *result, const int argc, const char **argv)
 {
     bool ok = true;
@@ -25,6 +27,18 @@ bool getTargetDeviceGlobalMemSize(memsize_t *result, const int argc, const char 
     cl_uint           targetDevice = 0;
     cl_ulong          memsize      = 0;
     cl_int            errnum       = 0;
+
+    for(int i = 0; i < argc && argv; i++)
+    {
+        if(!argv[i])
+            continue;
+          
+        if(strstr(argv[i], "cpu"))
+            use_gpu = 0;        
+
+        else if(strstr(argv[i], "gpu"))
+            use_gpu = 1;
+    }
 
     // Get the NVIDIA platform
     if (ok)
@@ -43,9 +57,9 @@ bool getTargetDeviceGlobalMemSize(memsize_t *result, const int argc, const char 
     if (ok)
     {
         shrLog(" clGetDeviceIDs\n"); 
-        errnum = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 0, NULL, &deviceCount);
+        errnum = clGetDeviceIDs(platform, use_gpu?CL_DEVICE_TYPE_GPU:CL_DEVICE_TYPE_CPU, 0, NULL, &deviceCount);
         devices = (cl_device_id *)malloc(deviceCount * sizeof(cl_device_id) );
-        errnum = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, deviceCount, devices, NULL);
+        errnum = clGetDeviceIDs(platform, use_gpu?CL_DEVICE_TYPE_GPU:CL_DEVICE_TYPE_CPU, deviceCount, devices, NULL);
         if ((deviceCount == 0) || (errnum != CL_SUCCESS))
         {
             shrLogEx(LOGBOTH | ERRORMSG, errnum, STDERROR);
@@ -182,9 +196,9 @@ bool fdtdGPU(float *output, const float *input, const float *coeff, const int di
     if (ok)
     {
         shrLog(" clGetDeviceIDs");
-        errnum = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 0, NULL, &deviceCount);
+        errnum = clGetDeviceIDs(platform, use_gpu?CL_DEVICE_TYPE_GPU:CL_DEVICE_TYPE_CPU, 0, NULL, &deviceCount);
         devices = (cl_device_id *)malloc(deviceCount * sizeof(cl_device_id) );
-        errnum = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, deviceCount, devices, NULL);
+        errnum = clGetDeviceIDs(platform, use_gpu?CL_DEVICE_TYPE_GPU:CL_DEVICE_TYPE_CPU, deviceCount, devices, NULL);
         if (errnum != CL_SUCCESS)
         {
             shrLogEx(LOGBOTH | ERRORMSG, errnum, STDERROR);

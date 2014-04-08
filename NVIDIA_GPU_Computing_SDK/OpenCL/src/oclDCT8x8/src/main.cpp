@@ -39,6 +39,20 @@ int main(int argc, char **argv)
 
     shrQAStart(argc, argv);
 
+
+    int use_gpu = 0;
+    for(int i = 0; i < argc && argv; i++)
+    {
+        if(!argv[i])
+            continue;
+          
+        if(strstr(argv[i], "cpu"))
+            use_gpu = 0;        
+
+        else if(strstr(argv[i], "gpu"))
+            use_gpu = 1;
+    }
+
     // set logfile name and start logs
     shrSetLogFileName ("oclDCT8x8.txt");
     shrLog("%s Starting...\n\n", argv[0]); 
@@ -58,7 +72,7 @@ int main(int argc, char **argv)
         oclCheckError(ciErrNum, CL_SUCCESS);
 
         //Get a GPU device
-        ciErrNum = clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, 1, &cdDevice, NULL);
+        ciErrNum = clGetDeviceIDs(cpPlatform, use_gpu?CL_DEVICE_TYPE_GPU:CL_DEVICE_TYPE_CPU, 1, &cdDevice, NULL);
         oclCheckError(ciErrNum, CL_SUCCESS);
 
         //Create the context

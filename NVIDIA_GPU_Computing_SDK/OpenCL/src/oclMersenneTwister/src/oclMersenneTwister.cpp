@@ -86,6 +86,19 @@ int main(int argc, const char **argv)
     const char *clSourcefile = "MersenneTwister.cl";// kernel file
 
     shrQAStart(argc, (char **)argv);
+    
+    int use_gpu = 0;
+    for(int i = 0; i < argc && argv; i++)
+    {
+        if(!argv[i])
+            continue;
+          
+        if(strstr(argv[i], "cpu"))
+            use_gpu = 0;        
+
+        else if(strstr(argv[i], "gpu"))
+            use_gpu = 1;
+    }
 
     shrSetLogFileName ("oclMersenneTwister.txt");
     shrLog("%s Starting, using %s...\n\n", argv[0], clSourcefile); 
@@ -95,10 +108,10 @@ int main(int argc, const char **argv)
     oclCheckError(ciErr1, CL_SUCCESS);
 
     shrLog("Get devices...\n");
-    ciErr1 = clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, 0, NULL, &nDevice);
+    ciErr1 = clGetDeviceIDs(cpPlatform, use_gpu?CL_DEVICE_TYPE_GPU:CL_DEVICE_TYPE_CPU, 0, NULL, &nDevice);
     oclCheckError(ciErr1, CL_SUCCESS);
     cdDevices = (cl_device_id *)malloc(nDevice * sizeof(cl_device_id) );
-    ciErr1 = clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, nDevice, cdDevices, NULL);
+    ciErr1 = clGetDeviceIDs(cpPlatform, use_gpu?CL_DEVICE_TYPE_GPU:CL_DEVICE_TYPE_CPU, nDevice, cdDevices, NULL);
     oclCheckError(ciErr1, CL_SUCCESS);
 
     shrLog("Create context...\n");
