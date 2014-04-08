@@ -25,6 +25,10 @@
 #include <fstream>
 #include <stdio.h>
 
+#ifdef __APPLE__
+#include <mach/mach_time.h>
+#endif
+
 using namespace std;
 
 // size of PGM file header 
@@ -101,6 +105,41 @@ double shrDeltaT(int iCounterID = 0)
 		    // No high resolution performance counter
 		    return -9999.0;
 	    }
+
+	#elif defined (__APPLE__) || defined (MACOSX)
+        static uint64_t _NewTime;
+        static uint64_t _OldTime[3];
+
+        _NewTime = mach_absolute_time();
+
+		if (iCounterID >= 0 && iCounterID <= 2) 
+		{
+		    // Calculate time difference for timer (iCounterID).  (zero when called the first time) 
+		    DeltaT = double(_NewTime-_OldTime[iCounterID])/CLOCKS_PER_SEC;
+
+            static double s_dConversion = 0.0;
+            uint64_t uiDifference = _NewTime - _OldTime[iCounterID];
+            if( 0.0 == s_dConversion )
+            {
+                mach_timebase_info_data_t kTimebase;
+                kern_return_t kError = mach_timebase_info( &kTimebase );
+                if( kError == 0  )
+                    s_dConversion = 1e-9 * (double) kTimebase.numer / (double) kTimebase.denom;
+            }
+                
+            DeltaT = s_dConversion * (double) uiDifference; 
+
+		    // Reset old time (iCounterID) to the new one
+		    _OldTime[iCounterID]  = _NewTime;
+		}
+		else 
+		{
+	        // Requested counter ID out of range
+	        DeltaT = -9999.0;
+		}
+        
+        return DeltaT;
+
     #elif defined(UNIX)  || defined (__EMSCRIPTEN__)// Linux version of precision host timer. See http://www.informit.com/articles/article.aspx?p=23618&seqNum=8
         static struct timeval _NewTime;  // new wall clock time (struct representation in seconds and microseconds)
         static struct timeval _OldTime[3]; // old wall clock timers 0, 1, 2 (struct representation in seconds and microseconds)
@@ -108,45 +147,23 @@ double shrDeltaT(int iCounterID = 0)
         // Get new counter reading
         gettimeofday(&_NewTime, NULL);
 
-		if (iCounterID >= 0 && iCounterID <= 2) 
-		{
-		    // Calculate time difference for timer (iCounterID).  (zero when called the first time) 
-		    DeltaT =  ((double)_NewTime.tv_sec + 1.0e-6 * (double)_NewTime.tv_usec) - ((double)_OldTime[iCounterID].tv_sec + 1.0e-6 * (double)_OldTime[iCounterID].tv_usec);
-		    // Reset old timer (iCounterID) to new timer
-		    _OldTime[iCounterID].tv_sec  = _NewTime.tv_sec;
-		    _OldTime[iCounterID].tv_usec = _NewTime.tv_usec;
-		}
-		else 
-		{
-	        // Requested counterID is out of rangewith respect to available counters
-	        DeltaT = -9999.0;
-		}
+        if (iCounterID >= 0 && iCounterID <= 2) 
+        {
+            // Calculate time difference for timer (iCounterID).  (zero when called the first time) 
+            DeltaT =  ((double)_NewTime.tv_sec + 1.0e-6 * (double)_NewTime.tv_usec) - ((double)_OldTime[iCounterID].tv_sec + 1.0e-6 * (double)_OldTime[iCounterID].tv_usec);
+            // Reset old timer (iCounterID) to new timer
+            _OldTime[iCounterID].tv_sec  = _NewTime.tv_sec;
+            _OldTime[iCounterID].tv_usec = _NewTime.tv_usec;
+        }
+        else 
+        {
+            // Requested counterID is out of rangewith respect to available counters
+            DeltaT = -9999.0;
+        }
 
-	    // Returns time difference in seconds sunce the last call
-	    return DeltaT;
-
-	#elif defined (__APPLE__) || defined (MACOSX)
-        static time_t _NewTime;
-        static time_t _OldTime[3];
-
-        _NewTime  = clock();
-
-		if (iCounterID >= 0 && iCounterID <= 2) 
-		{
-		    // Calculate time difference for timer (iCounterID).  (zero when called the first time) 
-		    DeltaT = double(_NewTime-_OldTime[iCounterID])/CLOCKS_PER_SEC;
-
-		    // Reset old time (iCounterID) to the new one
-		    _OldTime[iCounterID].tv_sec  = _NewTime.tv_sec;
-		    _OldTime[iCounterID].tv_usec = _NewTime.tv_usec;
-		}
-		else 
-		{
-	        // Requested counter ID out of range
-	        DeltaT = -9999.0;
-		}
+        // Returns time difference in seconds sunce the last call
         return DeltaT;
-        #else
+    #else
         printf("shrDeltaT returning early\n");
 	#endif
 } 
