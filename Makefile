@@ -114,23 +114,21 @@ SOURCES_histogram				= $(SOURCES_common) src/main.cpp src/oclHistogram_gold.cpp 
 SOURCES_matrixmul				= $(SOURCES_common) matrixMul_gold.cpp oclMatrixMul.cpp 
 SOURCES_matvecmul				= $(SOURCES_common) oclMatVecMul.cpp
 SOURCES_mersennetwister			= $(SOURCES_common) src/genmtrand.cpp src/oclMersenneTwister_gold.cpp src/oclMersenneTwister.cpp 
-SOURCES_nbody					= $(SOURCES_common)
-SOURCES_particles				= $(SOURCES_common)
-SOURCES_postprocessgl			= $(SOURCES_common)
-SOURCES_quasirandomgenerator	= $(SOURCES_common)
-SOURCES_radixsort				= $(SOURCES_common)
-SOURCES_recursivegaussian		= $(SOURCES_common)
-SOURCES_reduction				= $(SOURCES_common)
-SOURCES_scan					= $(SOURCES_common)
-SOURCES_simplegl				= $(SOURCES_common)
-SOURCES_simplemultigpu			= $(SOURCES_common)
-SOURCES_simpletexture3d			= $(SOURCES_common)
-SOURCES_sobelfilter				= $(SOURCES_common)
-SOURCES_sortingnetworks			= $(SOURCES_common)
-SOURCES_transpose				= $(SOURCES_common)
-SOURCES_tridiagonal				= $(SOURCES_common)
-SOURCES_vectoradd				= $(SOURCES_common)
-SOURCES_volumerender			= $(SOURCES_common)
+SOURCES_nbody					= $(SOURCES_common) src/oclBodySystemCpu.cpp src/oclBodySystemOpencl.cpp src/oclBodySystemOpenclLaunch.cpp src/oclNbody.cpp src/oclNbodyGold.cpp src/oclRenderParticles.cpp src/param.cpp src/paramgl.cpp 
+SOURCES_particles				= $(SOURCES_common) src/main.cpp src/oclBitonicSort_launcher.cpp src/oclManager.cpp src/oclParticles_launcher.cpp src/param.cpp src/paramgl.cpp src/particleSystem_class.cpp src/particleSystemHost.cpp src/render_particles.cpp src/shaders.cpp 
+SOURCES_postprocessgl			= $(SOURCES_common) oclPostprocessGL.cpp postprocessGL_Host.cpp 
+SOURCES_quasirandomgenerator	= $(SOURCES_common) oclQuasirandomGenerator_gold.cpp oclQuasirandomGenerator.cpp
+SOURCES_radixsort				= $(SOURCES_common) src/oclRadixSort.cpp src/RadixSort.cpp src/Scan.cpp
+SOURCES_recursivegaussian		= $(SOURCES_common) src/oclRecursiveGaussian.cpp src/RecursiveGaussianHost.cpp 
+SOURCES_reduction				= $(SOURCES_common) oclReduction.cpp 
+SOURCES_scan					= $(SOURCES_common) src/main.cpp src/oclScan_gold.cpp src/oclScan_launcher.cpp 
+SOURCES_simplegl				= $(SOURCES_common) oclSimpleGL.cpp
+SOURCES_simplemultigpu			= $(SOURCES_common) oclSimpleMultiGPU.cpp
+SOURCES_sobelfilter				= $(SOURCES_common) DeviceManager.cpp oclSobelFilter.cpp SobelFilterHost.cpp 
+SOURCES_sortingnetworks			= $(SOURCES_common) src/main.cpp src/oclBitonicSort_launcher.cpp src/oclSortingNetworks_validate.cpp
+SOURCES_transpose				= $(SOURCES_common) oclTranspose.cpp transpose_gold.cpp
+SOURCES_tridiagonal				= $(SOURCES_common) oclTridiagonal.cpp
+SOURCES_vectoradd				= $(SOURCES_common) oclVectorAdd.cpp
 
 INCLUDES_common					= -I$(EMSCRIPTEN_ROOT)/system/include -I$(CURRENT_ROOT)/NVIDIA_GPU_Computing_SDK/OpenCL/common/inc -I$(CURRENT_ROOT)//NVIDIA_GPU_Computing_SDK/shared/inc/
 
@@ -149,23 +147,21 @@ INCLUDES_histogram				= $(INCLUDES_common) -I./inc/
 INCLUDES_matrixmul				= $(INCLUDES_common)
 INCLUDES_matvecmul				= $(INCLUDES_common)
 INCLUDES_mersennetwister		= $(INCLUDES_common) -I./inc/
-INCLUDES_nbody					= $(INCLUDES_common)
-INCLUDES_particles				= $(INCLUDES_common)
+INCLUDES_nbody					= $(INCLUDES_common) -I./inc/
+INCLUDES_particles				= $(INCLUDES_common) -I./inc/
 INCLUDES_postprocessgl			= $(INCLUDES_common)
 INCLUDES_quasirandomgenerator	= $(INCLUDES_common)
 INCLUDES_radixsort				= $(INCLUDES_common)
-INCLUDES_recursivegaussian		= $(INCLUDES_common)
-INCLUDES_reduction				= $(INCLUDES_common)
-INCLUDES_scan					= $(INCLUDES_common)
+INCLUDES_recursivegaussian		= $(INCLUDES_common) -I./inc/
+INCLUDES_reduction				= $(INCLUDES_common) 
+INCLUDES_scan					= $(INCLUDES_common) -I./inc/
 INCLUDES_simplegl				= $(INCLUDES_common)
 INCLUDES_simplemultigpu			= $(INCLUDES_common)
-INCLUDES_simpletexture3d		= $(INCLUDES_common)
 INCLUDES_sobelfilter			= $(INCLUDES_common)
-INCLUDES_sortingnetworks		= $(INCLUDES_common)
+INCLUDES_sortingnetworks		= $(INCLUDES_common) -I./src/
 INCLUDES_transpose				= $(INCLUDES_common)
 INCLUDES_tridiagonal			= $(INCLUDES_common)
 INCLUDES_vectoradd				= $(INCLUDES_common)
-INCLUDES_volumerender			= $(INCLUDES_common)
 
 ifeq ($(NAT),0)
 
@@ -184,23 +180,21 @@ KERNEL_histogram				= --preload-file Histogram64.cl --preload-file Histogram256.
 KERNEL_matrixmul				= --preload-file matrixMul.cl  --preload-file matrixMul.hpp
 KERNEL_matvecmul				= --preload-file oclMatVecMul.cl
 KERNEL_mersennetwister			= --preload-file MersenneTwister.cl --preload-file data/MersenneTwister.dat --preload-file data/MersenneTwister.raw
-KERNEL_nbody					=
-KERNEL_particles				=
-KERNEL_postprocessgl			=
-KERNEL_quasirandomgenerator		=
-KERNEL_radixsort				=
-KERNEL_recursivegaussian		=
-KERNEL_reduction				=
-KERNEL_scan						=
-KERNEL_simplegl					=
-KERNEL_simplemultigpu			=
-KERNEL_simpletexture3d			=
-KERNEL_sobelfilter				=
-KERNEL_sortingnetworks			=
-KERNEL_transpose				=
-KERNEL_tridiagonal				=
-KERNEL_vectoradd				=
-KERNEL_volumerender				=
+KERNEL_nbody					= --preload-file oclNbodyKernel.cl
+KERNEL_particles				= --preload-file BitonicSort_b.cl --preload-file Particles.cl
+KERNEL_postprocessgl			= --preload-file PostprocessGL.cl
+KERNEL_quasirandomgenerator		= --preload-file QuasirandomGenerator.cl
+KERNEL_radixsort				= --preload-file RadixSort.cl --preload-file Scan_b.cl
+KERNEL_recursivegaussian		= --preload-file RecursiveGaussian.cl --preload-file data/StoneRGB.ppm
+KERNEL_reduction				= --preload-file oclReduction_kernel.cl
+KERNEL_scan						= --preload-file Scan.cl
+KERNEL_simplegl					= --preload-file simpleGL.cl
+KERNEL_simplemultigpu			= --preload-file simpleMultiGPU.cl
+KERNEL_sobelfilter				= --preload-file SobelFilter.cl --preload-file data/StoneRGB.ppm
+KERNEL_sortingnetworks			= --preload-file BitonicSort.cl
+KERNEL_transpose				= --preload-file transpose.cl
+KERNEL_tridiagonal				= --preload-file cyclic_kernels.cl --preload-file pcr_kernels.cl --preload-file sweep_kernels.cl
+KERNEL_vectoradd				= --preload-file VectorAdd.cl
 
 CFLAGS_bandwidthtest			= -s TOTAL_MEMORY=1024*1024*100
 CFLAGS_blackscholes				= -s TOTAL_MEMORY=1024*1024*100
@@ -227,13 +221,11 @@ CFLAGS_reduction				=
 CFLAGS_scan						=
 CFLAGS_simplegl					=
 CFLAGS_simplemultigpu			=
-CFLAGS_simpletexture3d			=
 CFLAGS_sobelfilter				=
 CFLAGS_sortingnetworks			=
 CFLAGS_transpose				=
 CFLAGS_tridiagonal				=
 CFLAGS_vectoradd				=
-CFLAGS_volumerender				=
 
 VALPARAM_bandwidthtest			= 
 VALPARAM_blackscholes			= -s CL_VAL_PARAM='[""]'
@@ -260,13 +252,11 @@ VALPARAM_reduction				= -s CL_VAL_PARAM='[""]'
 VALPARAM_scan					= -s CL_VAL_PARAM='[""]'
 VALPARAM_simplegl				= -s CL_VAL_PARAM='[""]'
 VALPARAM_simplemultigpu			= -s CL_VAL_PARAM='[""]'
-VALPARAM_simpletexture3d		= -s CL_VAL_PARAM='[""]'
 VALPARAM_sobelfilter			= -s CL_VAL_PARAM='[""]'
 VALPARAM_sortingnetworks		= -s CL_VAL_PARAM='[""]'
 VALPARAM_transpose				= -s CL_VAL_PARAM='[""]'
 VALPARAM_tridiagonal			= -s CL_VAL_PARAM='[""]'
 VALPARAM_vectoradd				= -s CL_VAL_PARAM='[""]'
-VALPARAM_volumerender			= -s CL_VAL_PARAM='[""]'
 
 else
 
@@ -284,24 +274,22 @@ COPY_hiddenmarkovmodel			= cp Viterbi.cl $(BUILD_FOLDER) &&
 COPY_histogram					= cp Histogram64.cl $(BUILD_FOLDER) && cp Histogram256.cl $(BUILD_FOLDER) &&
 COPY_matrixmul					= cp matrixMul.cl $(BUILD_FOLDER) && cp matrixMul.hpp $(BUILD_FOLDER) && 
 COPY_matvecmul					= cp oclMatVecMul.cl $(BUILD_FOLDER) &&
-COPY_mersennetwister			= mkdir -p $(BUILD_FOLDER)/data/ && cp MersenneTwister.cl $(BUILD_FOLDER) && cp data/MersenneTwister.dat $(BUILD_FOLDER) && cp data/MersenneTwister.raw $(BUILD_FOLDER) && 
-COPY_nbody						=
-COPY_particles					=
-COPY_postprocessgl				=
-COPY_quasirandomgenerator		=
-COPY_radixsort					=
-COPY_recursivegaussian			=
-COPY_reduction					=
-COPY_scan						=
-COPY_simplegl					=
-COPY_simplemultigpu				=
-COPY_simpletexture3d			=
-COPY_sobelfilter				=
-COPY_sortingnetworks			=
-COPY_transpose					=
-COPY_tridiagonal				=
-COPY_vectoradd					=
-COPY_volumerender				=
+COPY_mersennetwister			= mkdir -p $(BUILD_FOLDER)/data/ && cp MersenneTwister.cl $(BUILD_FOLDER) && cp data/MersenneTwister.dat $(BUILD_FOLDER) && cp data/MersenneTwister.raw $(BUILD_FOLDER)/data/ && 
+COPY_nbody						= cp oclNbodyKernel.cl $(BUILD_FOLDER) &&
+COPY_particles					= cp BitonicSort_b.cl $(BUILD_FOLDER) && cp Particles.cl $(BUILD_FOLDER) &&
+COPY_postprocessgl				= cp PostprocessGL.cl $(BUILD_FOLDER) && 
+COPY_quasirandomgenerator		= cp QuasirandomGenerator.cl $(BUILD_FOLDER) && 
+COPY_radixsort					= cp RadixSort.cl $(BUILD_FOLDER) && cp Scan_b.cl $(BUILD_FOLDER) && 
+COPY_recursivegaussian			= mkdir -p $(BUILD_FOLDER)/data/ && cp RecursiveGaussian.cl $(BUILD_FOLDER) &&  cp data/StoneRGB.ppm $(BUILD_FOLDER)/data/ &&
+COPY_reduction					= cp oclReduction_kernel.cl $(BUILD_FOLDER) &&
+COPY_scan						= cp Scan.cl $(BUILD_FOLDER) &&
+COPY_simplegl					= cp simpleGL.cl $(BUILD_FOLDER) &&
+COPY_simplemultigpu				= cp simpleMultiGPU.cl $(BUILD_FOLDER) &&
+COPY_sobelfilter				= cp SobelFilter.cl $(BUILD_FOLDER) && cp data/StoneRGB.ppm $(BUILD_FOLDER) &&
+COPY_sortingnetworks			= cp BitonicSort.cl $(BUILD_FOLDER) && 
+COPY_transpose					= cp transpose.cl $(BUILD_FOLDER) && 
+COPY_tridiagonal				= cp cyclic_kernels.cl $(BUILD_FOLDER) && cp pcr_kernels.cl $(BUILD_FOLDER) && cp sweep_kernels.cl $(BUILD_FOLDER) && 
+COPY_vectoradd					= cp VectorAdd.cl $(BUILD_FOLDER) && 
 
 endif
 
@@ -382,72 +370,64 @@ mersennetwister_sample: mkdir
 	$(COPY_mersennetwister)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_mersennetwister)		$(INCLUDES_mersennetwister)			$(SOURCES_mersennetwister)			$(VALPARAM_mersennetwister)			$(KERNEL_mersennetwister)		-o $(BUILD_FOLDER)$(PREFIX)mersennetwister$(EXTENSION)	
 
 nbody_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
+	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclNbody/)
 	$(COPY_nbody)					$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_nbody)					$(INCLUDES_nbody)					$(SOURCES_nbody)					$(VALPARAM_nbody)					$(KERNEL_nbody)					-o $(BUILD_FOLDER)$(PREFIX)nbody$(EXTENSION)
 
 particles_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
+	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclParticles/)
 	$(COPY_particles)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_particles)				$(INCLUDES_particles)				$(SOURCES_particles)				$(VALPARAM_particles)				$(KERNEL_particles)				-o $(BUILD_FOLDER)$(PREFIX)particles$(EXTENSION)
 
 postprocessgl_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
+	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclPostprocessGL/)
 	$(COPY_postprocessgl)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_postprocessgl)			$(INCLUDES_postprocessgl)			$(SOURCES_postprocessgl)			$(VALPARAM_postprocessgl)			$(KERNEL_postprocessgl)			-o $(BUILD_FOLDER)$(PREFIX)postprocessgl$(EXTENSION)
 
 quasirandomgenerator_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
+	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclQuasirandomGenerator/)
 	$(COPY_quasirandomgenerator)	$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_quasirandomgenerator)	$(INCLUDES_quasirandomgenerator)	$(SOURCES_quasirandomgenerator)		$(VALPARAM_quasirandomgenerator)	$(KERNEL_quasirandomgenerator)	-o $(BUILD_FOLDER)$(PREFIX)quasirandomgenerator$(EXTENSION)
 
 radixsort_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
+	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclRadixSort/)
 	$(COPY_radixsort)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_radixsort)				$(INCLUDES_radixsort)				$(SOURCES_radixsort)				$(VALPARAM_radixsort)				$(KERNEL_radixsort)				-o $(BUILD_FOLDER)$(PREFIX)radixsort$(EXTENSION)
 
 recursivegaussian_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
+	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclRecursiveGaussian/)
 	$(COPY_recursivegaussian)		$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_recursivegaussian)		$(INCLUDES_recursivegaussian)		$(SOURCES_recursivegaussian)		$(VALPARAM_recursivegaussian)		$(KERNEL_recursivegaussian)		-o $(BUILD_FOLDER)$(PREFIX)recursivegaussian$(EXTENSION)
 
 reduction_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
+	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclReduction/)
 	$(COPY_reduction)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_reduction)				$(INCLUDES_reduction)				$(SOURCES_reduction)				$(VALPARAM_reduction)				$(KERNEL_reduction)				-o $(BUILD_FOLDER)$(PREFIX)reduction$(EXTENSION)
 
 scan_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
+	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclScan/)
 	$(COPY_scan)					$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_scan)					$(INCLUDES_scan)					$(SOURCES_scan)						$(VALPARAM_scan)					$(KERNEL_scan)					-o $(BUILD_FOLDER)$(PREFIX)scan$(EXTENSION)
 
 simplegl_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
+	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclSimpleGL/)
 	$(COPY_simplegl)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_simplegl)				$(INCLUDES_simplegl)				$(SOURCES_simplegl)					$(VALPARAM_simplegl)				$(KERNEL_simplegl)				-o $(BUILD_FOLDER)$(PREFIX)simplegl$(EXTENSION)
 
 simplemultigpu_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
+	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclSimpleMultiGPU/)
 	$(COPY_simplemultigpu)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_simplemultigpu)		$(INCLUDES_simplemultigpu)			$(SOURCES_simplemultigpu)			$(VALPARAM_simplemultigpu)			$(KERNEL_simplemultigpu)		-o $(BUILD_FOLDER)$(PREFIX)simplemultigpu$(EXTENSION)	
 
-simpletexture3d_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_simpletexture3d)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_simpletexture3d)		$(INCLUDES_simpletexture3d)			$(SOURCES_simpletexture3d)			$(VALPARAM_simpletexture3d)			$(KERNEL_simpletexture3d)		-o $(BUILD_FOLDER)$(PREFIX)simpletexture3d$(EXTENSION)	
-
 sobelfilter_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
+	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclSobelFilter/)
 	$(COPY_sobelfilter)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_sobelfilter)			$(INCLUDES_sobelfilter)				$(SOURCES_sobelfilter)				$(VALPARAM_sobelfilter)				$(KERNEL_sobelfilter)			-o $(BUILD_FOLDER)$(PREFIX)sobelfilter$(EXTENSION)	
 
 sortingnetworks_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
+	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclSortingNetworks/)
 	$(COPY_sortingnetworks)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_sortingnetworks)		$(INCLUDES_sortingnetworks)			$(SOURCES_sortingnetworks)			$(VALPARAM_sortingnetworks)			$(KERNEL_sortingnetworks)		-o $(BUILD_FOLDER)$(PREFIX)sortingnetworks$(EXTENSION)	
 
 transpose_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
+	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclTranspose/)
 	$(COPY_transpose)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_transpose)				$(INCLUDES_transpose)				$(SOURCES_transpose)				$(VALPARAM_transpose)				$(KERNEL_transpose)				-o $(BUILD_FOLDER)$(PREFIX)transpose$(EXTENSION)
 
 tridiagonal_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
+	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclTridiagonal/)
 	$(COPY_tridiagonal)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_tridiagonal)			$(INCLUDES_tridiagonal)				$(SOURCES_tridiagonal)				$(VALPARAM_tridiagonal)				$(KERNEL_tridiagonal)			-o $(BUILD_FOLDER)$(PREFIX)tridiagonal$(EXTENSION)	
 
 vectoradd_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
+	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclVectorAdd/)
 	$(COPY_vectoradd)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_vectoradd)				$(INCLUDES_vectoradd)				$(SOURCES_vectoradd)				$(VALPARAM_vectoradd)				$(KERNEL_vectoradd)				-o $(BUILD_FOLDER)$(PREFIX)vectoradd$(EXTENSION)
-
-volumerender_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/)
-	$(COPY_volumerender)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_volumerender)			$(INCLUDES_volumerender)			$(SOURCES_volumerender)				$(VALPARAM_volumerender)			$(KERNEL_volumerender)			-o $(BUILD_FOLDER)$(PREFIX)volumerender$(EXTENSION)
 
 clean:
 	rm -rf bin/
@@ -460,304 +440,3 @@ clean:
 	rm -rf tmp/
 	$(EMSCRIPTEN_ROOT)/emcc --clear-cache
 	
-
-# ifeq ($(NAT),1)
-# oclMersenneTwister_preload =
-# else
-# oclMersenneTwister_preload = --preload-file MersenneTwister.cl --preload-file data/MersenneTwister.dat --preload-file data/MersenneTwister.raw
-# endif
-# oclMersenneTwister_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclMersenneTwister/)
-# 	cp *.cl ../../../../build/out/
-# 	cp -R data/ ../../../../build/out/data/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclMersenneTwister.$(EXTENSION) \
-# 	-Iinc/ \
-# 	$(common_part) \
-# 	src/genmtrand.cpp \
-# 	src/oclMersenneTwister_gold.cpp \
-# 	src/oclMersenneTwister.cpp \
-# 	$(oclMersenneTwister_preload)
-
-# ifeq ($(NAT),1)
-# oclNbody_preload =
-# else
-# oclNbody_preload = --preload-file oclNbodyKernel.cl
-# endif
-# oclNbody_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclNbody/)
-# 	cp *.cl ../../../../build/out/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclNbody.$(EXTENSION) \
-# 	-Iinc/ \
-# 	$(common_part) \
-# 	src/oclBodySystemCpu.cpp \
-# 	src/oclBodySystemOpencl.cpp \
-# 	src/oclBodySystemOpenclLaunch.cpp \
-# 	src/oclNbody.cpp \
-# 	src/oclNbodyGold.cpp \
-# 	src/oclRenderParticles.cpp \
-# 	src/param.cpp \
-# 	src/paramgl.cpp \
-# 	$(oclNbody_preload)
-
-
-# ifeq ($(NAT),1)
-# oclParticles_preload = 
-# else
-# oclParticles_preload = 	--preload-file BitonicSort_b.cl --preload-file Particles.cl
-# endif
-# oclParticles_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclParticles/)
-# 	cp *.cl ../../../../build/out/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclParticles.$(EXTENSION) \
-# 	-Iinc/ \
-# 	$(common_part) \
-# 	src/main.cpp \
-# 	src/oclBitonicSort_launcher.cpp \
-# 	src/oclManager.cpp \
-# 	src/oclParticles_launcher.cpp \
-# 	src/param.cpp \
-# 	src/paramgl.cpp \
-# 	src/particleSystem_class.cpp \
-# 	src/particleSystemHost.cpp \
-# 	src/render_particles.cpp \
-# 	src/shaders.cpp \
-# 	$(oclParticles_preload)
-
-# ifeq ($(NAT),1)
-# oclPostprocessGL_preload = 
-# else
-# oclPostprocessGL_preload = --preload-file PostprocessGL.cl
-# endif
-# oclPostprocessGL_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclPostprocessGL/)
-# 	cp *.cl ../../../../build/out/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclPostprocessGL.$(EXTENSION) \
-# 	$(common_part) \
-# 	oclPostprocessGL.cpp \
-# 	postprocessGL_Host.cpp \
-# 	$(oclPostprocessGL_preload)
-
-# ifeq ($(NAT),1)
-# oclQuasirandomGenerator_preload = 
-# else
-# oclQuasirandomGenerator_preload = --preload-file QuasirandomGenerator.cl
-# endif
-# oclQuasirandomGenerator_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclQuasirandomGenerator/)
-# 	cp *.cl ../../../../build/out/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclQuasirandomGenerator.$(EXTENSION) \
-# 	$(common_part) \
-# 	oclQuasirandomGenerator_gold.cpp \
-# 	oclQuasirandomGenerator.cpp \
-# 	$(oclQuasirandomGenerator_preload)
-
-# ifeq ($(NAT),1)
-# oclRadixSort_preload =
-# else
-# oclRadixSort_preload = --preload-file RadixSort.cl --preload-file Scan_b.cl
-# endif
-# oclRadixSort_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclRadixSort/)
-# 	cp *.cl ../../../../build/out/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclRadixSort.$(EXTENSION) \
-# 	-Iinc/ \
-# 	$(common_part) \
-# 	src/oclRadixSort.cpp \
-# 	src/RadixSort.cpp \
-# 	src/Scan.cpp \
-# 	$(oclRadixSort_preload)	
-
-# ifeq ($(NAT),1)
-# oclRecursiveGaussian_preload =
-# else
-# oclRecursiveGaussian_preload = --preload-file RecursiveGaussian.cl --preload-file data/StoneRGB.ppm
-# endif
-# oclRecursiveGaussian_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclRecursiveGaussian/)
-# 	cp *.cl ../../../../build/out/
-# 	cp -R data/ ../../../../build/out/data/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclRecursiveGaussian.$(EXTENSION) \
-# 	-Iinc/ \
-# 	$(common_part) \
-# 	src/oclRecursiveGaussian.cpp \
-# 	src/RecursiveGaussianHost.cpp \
-# 	$(oclRecursiveGaussian_preload)	
-
-# ifeq ($(NAT),1)
-# oclReduction_preload =
-# else
-# oclReduction_preload = --preload-file oclReduction_kernel.cl
-# endif
-# oclReduction_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclReduction/)
-# 	cp *.cl ../../../../build/out/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclReduction.$(EXTENSION) \
-# 	-I./ \
-# 	$(common_part) \
-# 	oclReduction.cpp \
-# 	$(oclReduction_preload)	
-
-# ifeq ($(NAT),1)
-# oclScan_preload =
-# else
-# oclScan_preload = --preload-file Scan.cl
-# endif
-# oclScan_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclScan/)
-# 	cp *.cl ../../../../build/out/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclScan.$(EXTENSION) \
-# 	-Iinc/ \
-# 	$(common_part) \
-# 	src/main.cpp \
-# 	src/oclScan_gold.cpp \
-# 	src/oclScan_launcher.cpp \
-# 	$(oclScan_preload)	
-
-
-# ifeq ($(NAT),1)
-# oclSimpleGL_preload =
-# else
-# oclSimpleGL_preload = --preload-file simpleGL.cl
-# endif
-# oclSimpleGL_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclSimpleGL/)
-# 	cp *.cl ../../../../build/out/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclSimpleGL.$(EXTENSION) \
-# 	-Iinc/ \
-# 	$(common_part) \
-# 	oclSimpleGL.cpp \
-# 	$(oclSimpleGL_preload)	
-
-# ifeq ($(NAT),1)
-# oclSimpleMultiGPU_preload =
-# else
-# oclSimpleMultiGPU_preload = --preload-file simpleMultiGPU.cl
-# endif
-# oclSimpleMultiGPU_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclSimpleMultiGPU/)
-# 	cp *.cl ../../../../build/out/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclSimpleMultiGPU.$(EXTENSION) \
-# 	$(common_part) \
-# 	oclSimpleMultiGPU.cpp \
-# 	$(oclSimpleMultiGPU_preload)	
-
-# ifeq ($(NAT),1)
-# oclSimpleTexture3D_preload =
-# else
-# oclSimpleTexture3D_preload = --preload-file oclSimpleTexture3D_kernel.cl --preload-file data/Bucky.raw --preload-file data/ref_simpleTex3D.ppm --preload-file data/ref_texture3D.bin
-# endif
-# oclSimpleTexture3D_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclSimpleTexture3D/)
-# 	cp *.cl ../../../../build/out/
-# 	cp -R data/ ../../../../build/out/data/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclSimpleTexture3D.$(EXTENSION) \
-# 	$(common_part) \
-# 	oclSimpleTexture3D.cpp \
-# 	$(oclSimpleTexture3D_preload)	
-
-# ifeq ($(NAT),1)
-# oclSobelFilter_preload =
-# else
-# oclSobelFilter_preload = --preload-file SobelFilter.cl --preload-file data/StoneRGB.ppm
-# endif
-# oclSobelFilter_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclSobelFilter/)
-# 	cp *.cl ../../../../build/out/
-# 	cp -R data/ ../../../../build/out/data/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclSobelFilter.$(EXTENSION) \
-# 	-I./ \
-# 	$(common_part) \
-# 	DeviceManager.cpp \
-# 	oclSobelFilter.cpp \
-# 	SobelFilterHost.cpp \
-# 	$(oclSobelFilter_preload)	
-
-# ifeq ($(NAT),1)
-# oclSortingNetworks_preload =
-# else
-# oclSortingNetworks_preload = --preload-file BitonicSort.cl
-# endif
-# oclSortingNetworks_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclSortingNetworks/)
-# 	cp *.cl ../../../../build/out/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclSortingNetworks.$(EXTENSION) \
-# 	-I./src/ \
-# 	$(common_part) \
-# 	src/main.cpp \
-# 	src/oclBitonicSort_launcher.cpp \
-# 	src/oclSortingNetworks_validate.cpp \
-# 	$(oclSortingNetworks_preload)	
-
-# ifeq ($(NAT),1)
-# oclTranspose_preload =
-# else
-# oclTranspose_preload = --preload-file transpose.cl
-# endif
-# oclTranspose_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclTranspose/)
-# 	cp *.cl ../../../../build/out/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclTranspose.$(EXTENSION) \
-# 	$(common_part) \
-# 	oclTranspose.cpp \
-# 	transpose_gold.cpp \
-# 	$(oclTranspose_preload)	
-
-# ifeq ($(NAT),1)
-# oclTridiagonal_preload =
-# else
-# oclTridiagonal_preload = --preload-file cyclic_kernels.cl --preload-file pcr_kernels.cl --preload-file sweep_kernels.cl
-# endif
-# oclTridiagonal_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclTridiagonal/)
-# 	cp *.cl ../../../../build/out/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclTridiagonal.$(EXTENSION) \
-# 	-I./ \
-# 	$(common_part) \
-# 	oclTridiagonal.cpp \
-# 	$(oclTridiagonal_preload)	
-
-# ifeq ($(NAT),1)
-# oclVectorAdd_preload =
-# else
-# oclVectorAdd_preload = --preload-file VectorAdd.cl
-# endif
-# oclVectorAdd_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclVectorAdd/)
-# 	cp *.cl ../../../../build/out/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclVectorAdd.$(EXTENSION) \
-# 	$(common_part) \
-# 	oclVectorAdd.cpp \
-# 	$(oclVectorAdd_preload)	
-
-# ifeq ($(NAT),1)
-# oclVolumeRender_preload =
-# else
-# oclVolumeRender_preload = --preload-file volumeRender.cl --preload-file data/Bucky.raw
-# endif
-# oclVolumeRender_sample:
-# 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclVolumeRender/)
-# 	cp *.cl ../../../../build/out/
-# 	JAVA_HEAP_SIZE=8096m $(EMCCDEBUG)=1 $(CXX) $(MODE) \
-# 	-o ../../../../$(BUILD_FOLDER)/$(PREFIX)oclVolumeRender.$(EXTENSION) \
-# 	$(common_part) \
-# 	oclVolumeRender.cpp \
-# 	$(oclVolumeRender_preload)	
-
-
