@@ -11,15 +11,17 @@
  
  #include "DeviceManager.h"
 
+extern int use_gpu;
+
 DeviceManager::DeviceManager(cl_platform_id cpPlatform, cl_uint* uiNumAllDevs, void (*pCleanup)(int))
 {
     // Get the number of GPU devices available to the platform
-    clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, 0, NULL, uiNumAllDevs);
+    clGetDeviceIDs(cpPlatform, use_gpu?CL_DEVICE_TYPE_GPU:CL_DEVICE_TYPE_CPU, 0, NULL, uiNumAllDevs);
     uiDevCount = *uiNumAllDevs;
 
     // Create the device list
     cdDevices = new cl_device_id [uiDevCount];
-    clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, uiDevCount, cdDevices, NULL);
+    clGetDeviceIDs(cpPlatform, use_gpu?CL_DEVICE_TYPE_GPU:CL_DEVICE_TYPE_CPU, uiDevCount, cdDevices, NULL);
 
     // Allocations for perfs, loads and useful devices
     fLoadProportions = new float[uiDevCount];    

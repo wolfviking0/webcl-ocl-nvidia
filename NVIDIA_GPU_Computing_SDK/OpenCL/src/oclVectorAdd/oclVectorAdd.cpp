@@ -69,6 +69,19 @@ int main(int argc, char **argv)
 {
     shrQAStart(argc, argv);
 
+    int use_gpu = 0;
+    for(int i = 0; i < argc && argv; i++)
+    {
+        if(!argv[i])
+            continue;
+          
+        if(strstr(argv[i], "cpu"))
+            use_gpu = 0;        
+
+        else if(strstr(argv[i], "gpu"))
+            use_gpu = 1;
+    }
+    
     // get command line arg for quick test, if provided
     bNoPrompt = shrCheckCmdLineFlag(argc, (const char**)argv, "noprompt");
     
@@ -103,7 +116,7 @@ int main(int argc, char **argv)
     }
 
     //Get the devices
-    ciErr1 = clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, 1, &cdDevice, NULL);
+    ciErr1 = clGetDeviceIDs(cpPlatform, use_gpu?CL_DEVICE_TYPE_GPU:CL_DEVICE_TYPE_CPU, 1, &cdDevice, NULL);
     shrLog("clGetDeviceIDs...\n"); 
     if (ciErr1 != CL_SUCCESS)
     {

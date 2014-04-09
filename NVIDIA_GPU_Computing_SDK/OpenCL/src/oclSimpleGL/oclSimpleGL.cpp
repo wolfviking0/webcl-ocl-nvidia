@@ -144,6 +144,19 @@ int main(int argc, char** argv)
     shrSetLogFileName ("oclSimpleGL.txt");
     shrLog("%s Starting...\n\n", argv[0]); 
 
+    int use_gpu = 0;
+    for(int i = 0; i < argc && argv; i++)
+    {
+        if(!argv[i])
+            continue;
+          
+        if(strstr(argv[i], "cpu"))
+            use_gpu = 0;        
+
+        else if(strstr(argv[i], "gpu"))
+            use_gpu = 1;
+    }
+    
     // check command line args
     if (argc > 1) 
     {
@@ -163,12 +176,12 @@ int main(int argc, char** argv)
     oclCheckErrorEX(ciErrNum, CL_SUCCESS, pCleanup);
 
     // Get the number of GPU devices available to the platform
-    ciErrNum = clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, 0, NULL, &uiDevCount);
+    ciErrNum = clGetDeviceIDs(cpPlatform, use_gpu?CL_DEVICE_TYPE_GPU:CL_DEVICE_TYPE_CPU, 0, NULL, &uiDevCount);
     oclCheckErrorEX(ciErrNum, CL_SUCCESS, pCleanup);
 
     // Create the device list
     cdDevices = new cl_device_id [uiDevCount];
-    ciErrNum = clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, uiDevCount, cdDevices, NULL);
+    ciErrNum = clGetDeviceIDs(cpPlatform, use_gpu?CL_DEVICE_TYPE_GPU:CL_DEVICE_TYPE_CPU, uiDevCount, cdDevices, NULL);
     oclCheckErrorEX(ciErrNum, CL_SUCCESS, pCleanup);
 
     // Get device requested on command line, if any

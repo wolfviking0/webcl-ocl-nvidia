@@ -71,6 +71,19 @@ int main(int argc, const char **argv)
     // Start logs 
     shrSetLogFileName("oclQuasirandomGenerator.txt");
     shrLog("%s Starting...\n\n", argv[0]); 
+    
+    int use_gpu = 0;
+    for(int i = 0; i < argc && argv; i++)
+    {
+        if(!argv[i])
+            continue;
+          
+        if(strstr(argv[i], "cpu"))
+            use_gpu = 0;        
+
+        else if(strstr(argv[i], "gpu"))
+            use_gpu = 1;
+    }
 
     //Get the NVIDIA platform
     shrLog("clGetPlatformID...\n"); 
@@ -79,10 +92,10 @@ int main(int argc, const char **argv)
 
     //Get the devices
     shrLog("clGetDeviceIDs...\n"); 
-    ciErr = clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, 0, NULL, &nDevice);
+    ciErr = clGetDeviceIDs(cpPlatform, use_gpu?CL_DEVICE_TYPE_GPU:CL_DEVICE_TYPE_CPU, 0, NULL, &nDevice);
     oclCheckErrorEX(ciErr, CL_SUCCESS, NULL);
     cdDevices = (cl_device_id *)malloc(nDevice * sizeof(cl_device_id) );
-    ciErr = clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, nDevice, cdDevices, NULL);
+    ciErr = clGetDeviceIDs(cpPlatform, use_gpu?CL_DEVICE_TYPE_GPU:CL_DEVICE_TYPE_CPU, nDevice, cdDevices, NULL);
     oclCheckErrorEX(ciErr, CL_SUCCESS, NULL);
 
     //Create the context

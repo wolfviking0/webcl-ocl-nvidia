@@ -165,6 +165,8 @@ void ShowMenuItems();
 void Cleanup(int iExitCode);
 void (*pCleanup)(int) = &Cleanup;
 
+int use_gpu = 0;
+
 // Main program
 //*****************************************************************************
 int main(int argc, char** argv)
@@ -173,6 +175,19 @@ int main(int argc, char** argv)
 	pArgv = argv;
 
 	shrQAStart(argc, argv);
+
+ 
+    for(int i = 0; i < argc && argv; i++)
+    {
+        if(!argv[i])
+            continue;
+          
+        if(strstr(argv[i], "cpu"))
+            use_gpu = 0;        
+
+        else if(strstr(argv[i], "gpu"))
+            use_gpu = 1;
+    }
 
     // Start logs 
 	cExecutableName = argv[0];

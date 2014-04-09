@@ -162,6 +162,19 @@ int runTest( const int argc, const char** argv)
     unsigned int size_x = 2048;
     unsigned int size_y = 2048;
 
+    int use_gpu = 0;
+    for(int i = 0; i < argc && argv; i++)
+    {
+        if(!argv[i])
+            continue;
+          
+        if(strstr(argv[i], "cpu"))
+            use_gpu = 0;        
+
+        else if(strstr(argv[i], "gpu"))
+            use_gpu = 1;
+    }
+    
     int temp;
     if( shrGetCmdLineArgumenti( argc, argv,"width", &temp) ){
         size_x = temp;
@@ -179,10 +192,10 @@ int runTest( const int argc, const char** argv)
     oclCheckError(ciErrNum, CL_SUCCESS);
 
     //Get the devices
-    ciErrNum = clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, 0, NULL, &uiNumDevices);
+    ciErrNum = clGetDeviceIDs(cpPlatform, use_gpu?CL_DEVICE_TYPE_GPU:CL_DEVICE_TYPE_CPU, 0, NULL, &uiNumDevices);
     oclCheckError(ciErrNum, CL_SUCCESS);
     cdDevices = (cl_device_id *)malloc(uiNumDevices * sizeof(cl_device_id) );
-    ciErrNum = clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, uiNumDevices, cdDevices, NULL);
+    ciErrNum = clGetDeviceIDs(cpPlatform, use_gpu?CL_DEVICE_TYPE_GPU:CL_DEVICE_TYPE_CPU, uiNumDevices, cdDevices, NULL);
     oclCheckError(ciErrNum, CL_SUCCESS);
 
     //Create the context

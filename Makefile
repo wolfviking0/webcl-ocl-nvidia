@@ -70,11 +70,11 @@ $(info ************ EMSCRIPTEN : DEBUG         = 1 ************)
 
 GLOBAL += EMCC_DEBUG=1
 
-CFLAGS = -s OPT_LEVEL=1 -s DEBUG_LEVEL=1 -s CL_PRINT_TRACE=1 -s WARN_ON_UNDEFINED_SYMBOLS=1 -s CL_DEBUG=1 -s CL_GRAB_TRACE=1 -s CL_CHECK_VALID_OBJECT=1
+CFLAGS = -s OPT_LEVEL=1 -s DEBUG_LEVEL=1 -s CL_PRINT_TRACE=1 -s WARN_ON_UNDEFINED_SYMBOLS=1 -s CL_DEBUG=1 -s CL_GRAB_TRACE=1 -s CL_CHECK_VALID_OBJECT=1 -DGPU_PROFILING
 else
 $(info ************ EMSCRIPTEN : DEBUG         = 0 ************)
 
-CFLAGS = -s OPT_LEVEL=3 -s DEBUG_LEVEL=0 -s CL_PRINT_TRACE=0 -s DISABLE_EXCEPTION_CATCHING=0 -s WARN_ON_UNDEFINED_SYMBOLS=1 -s CL_DEBUG=0 -s CL_GRAB_TRACE=0 -s CL_CHECK_VALID_OBJECT=0
+CFLAGS = -s OPT_LEVEL=3 -s DEBUG_LEVEL=0 -s CL_PRINT_TRACE=0 -s DISABLE_EXCEPTION_CATCHING=0 -s WARN_ON_UNDEFINED_SYMBOLS=1 -s CL_DEBUG=0 -s CL_GRAB_TRACE=0 -s CL_CHECK_VALID_OBJECT=0 -DGPU_PROFILING
 endif
 
 ifeq ($(VAL),1)
@@ -116,7 +116,6 @@ SOURCES_matvecmul				= $(SOURCES_common) oclMatVecMul.cpp
 SOURCES_mersennetwister			= $(SOURCES_common) src/genmtrand.cpp src/oclMersenneTwister_gold.cpp src/oclMersenneTwister.cpp 
 SOURCES_nbody					= $(SOURCES_common) src/oclBodySystemCpu.cpp src/oclBodySystemOpencl.cpp src/oclBodySystemOpenclLaunch.cpp src/oclNbody.cpp src/oclNbodyGold.cpp src/oclRenderParticles.cpp src/param.cpp src/paramgl.cpp 
 SOURCES_particles				= $(SOURCES_common) src/main.cpp src/oclBitonicSort_launcher.cpp src/oclManager.cpp src/oclParticles_launcher.cpp src/param.cpp src/paramgl.cpp src/particleSystem_class.cpp src/particleSystemHost.cpp src/render_particles.cpp src/shaders.cpp 
-SOURCES_postprocessgl			= $(SOURCES_common) oclPostprocessGL.cpp postprocessGL_Host.cpp 
 SOURCES_quasirandomgenerator	= $(SOURCES_common) oclQuasirandomGenerator_gold.cpp oclQuasirandomGenerator.cpp
 SOURCES_radixsort				= $(SOURCES_common) src/oclRadixSort.cpp src/RadixSort.cpp src/Scan.cpp
 SOURCES_recursivegaussian		= $(SOURCES_common) src/oclRecursiveGaussian.cpp src/RecursiveGaussianHost.cpp 
@@ -149,11 +148,10 @@ INCLUDES_matvecmul				= $(INCLUDES_common)
 INCLUDES_mersennetwister		= $(INCLUDES_common) -I./inc/
 INCLUDES_nbody					= $(INCLUDES_common) -I./inc/
 INCLUDES_particles				= $(INCLUDES_common) -I./inc/
-INCLUDES_postprocessgl			= $(INCLUDES_common)
-INCLUDES_quasirandomgenerator	= $(INCLUDES_common)
-INCLUDES_radixsort				= $(INCLUDES_common)
+INCLUDES_quasirandomgenerator	= $(INCLUDES_common) 
+INCLUDES_radixsort				= $(INCLUDES_common) -I./inc/
 INCLUDES_recursivegaussian		= $(INCLUDES_common) -I./inc/
-INCLUDES_reduction				= $(INCLUDES_common) 
+INCLUDES_reduction				= $(INCLUDES_common) -I./
 INCLUDES_scan					= $(INCLUDES_common) -I./inc/
 INCLUDES_simplegl				= $(INCLUDES_common)
 INCLUDES_simplemultigpu			= $(INCLUDES_common)
@@ -211,21 +209,20 @@ CFLAGS_histogram				= -s TOTAL_MEMORY=1024*1024*100
 CFLAGS_matrixmul				=
 CFLAGS_matvecmul				= -s TOTAL_MEMORY=1024*1024*300
 CFLAGS_mersennetwister			= -s TOTAL_MEMORY=1024*1024*200
-CFLAGS_nbody					=
-CFLAGS_particles				=
-CFLAGS_postprocessgl			=
-CFLAGS_quasirandomgenerator		=
+CFLAGS_nbody					= -s TOTAL_MEMORY=1024*1024*100 -s GL_FFP_ONLY=1 -s LEGACY_GL_EMULATION=1
+CFLAGS_particles				= -s TOTAL_MEMORY=1024*1024*100 -s GL_FFP_ONLY=1 -s LEGACY_GL_EMULATION=1
+CFLAGS_quasirandomgenerator		= -s TOTAL_MEMORY=1024*1024*100 
 CFLAGS_radixsort				=
-CFLAGS_recursivegaussian		=
-CFLAGS_reduction				=
-CFLAGS_scan						=
-CFLAGS_simplegl					=
-CFLAGS_simplemultigpu			=
-CFLAGS_sobelfilter				=
-CFLAGS_sortingnetworks			=
-CFLAGS_transpose				=
-CFLAGS_tridiagonal				=
-CFLAGS_vectoradd				=
+CFLAGS_recursivegaussian		= -s TOTAL_MEMORY=1024*1024*100 -s GL_FFP_ONLY=1 -s LEGACY_GL_EMULATION=1
+CFLAGS_reduction				= -s TOTAL_MEMORY=1024*1024*100
+CFLAGS_scan						= -s TOTAL_MEMORY=1024*1024*200
+CFLAGS_simplegl					= -s TOTAL_MEMORY=1024*1024*100 -s GL_FFP_ONLY=1 -s LEGACY_GL_EMULATION=1
+CFLAGS_simplemultigpu			= -s TOTAL_MEMORY=1024*1024*100
+CFLAGS_sobelfilter				= -s TOTAL_MEMORY=1024*1024*100 -s GL_FFP_ONLY=1 -s LEGACY_GL_EMULATION=1
+CFLAGS_sortingnetworks			= -s TOTAL_MEMORY=1024*1024*100
+CFLAGS_transpose				= -s TOTAL_MEMORY=1024*1024*100
+CFLAGS_tridiagonal				= -s TOTAL_MEMORY=1024*1024*100
+CFLAGS_vectoradd				= -s TOTAL_MEMORY=1024*1024*200
 
 VALPARAM_bandwidthtest			= 
 VALPARAM_blackscholes			= -s CL_VAL_PARAM='[""]'
@@ -242,20 +239,19 @@ VALPARAM_histogram				= -s CL_VAL_PARAM='["-D LOG2_WARP_SIZE:5","-D WARP_COUNT:6
 VALPARAM_matrixmul				= -s CL_VAL_PARAM='[""]'
 VALPARAM_matvecmul				= -s CL_VAL_PARAM='[""]'
 VALPARAM_mersennetwister		= -s CL_VAL_PARAM='[""]'
-VALPARAM_nbody					= -s CL_VAL_PARAM='[""]'
-VALPARAM_particles				= -s CL_VAL_PARAM='[""]'
-VALPARAM_postprocessgl			= -s CL_VAL_PARAM='[""]'
+VALPARAM_nbody					= -s CL_VAL_PARAM='["-cl-fast-relaxed-math"]'
+VALPARAM_particles				= -s CL_VAL_PARAM='["-cl-fast-relaxed-math"]'
 VALPARAM_quasirandomgenerator	= -s CL_VAL_PARAM='[""]'
-VALPARAM_radixsort				= -s CL_VAL_PARAM='[""]'
-VALPARAM_recursivegaussian		= -s CL_VAL_PARAM='[""]'
-VALPARAM_reduction				= -s CL_VAL_PARAM='[""]'
-VALPARAM_scan					= -s CL_VAL_PARAM='[""]'
-VALPARAM_simplegl				= -s CL_VAL_PARAM='[""]'
-VALPARAM_simplemultigpu			= -s CL_VAL_PARAM='[""]'
-VALPARAM_sobelfilter			= -s CL_VAL_PARAM='[""]'
-VALPARAM_sortingnetworks		= -s CL_VAL_PARAM='[""]'
-VALPARAM_transpose				= -s CL_VAL_PARAM='[""]'
-VALPARAM_tridiagonal			= -s CL_VAL_PARAM='[""]'
+VALPARAM_radixsort				= -s CL_VAL_PARAM='["-cl-fast-relaxed-math"]'
+VALPARAM_recursivegaussian		= -s CL_VAL_PARAM='["-cl-fast-relaxed-math","-D CLAMP_TO_EDGE"]'
+VALPARAM_reduction				= -s CL_VAL_PARAM='["-cl-fast-relaxed-math"]'
+VALPARAM_scan					= -s CL_VAL_PARAM='["-D WORKGROUP_SIZE:256"]'
+VALPARAM_simplegl				= -s CL_VAL_PARAM='["-cl-fast-relaxed-math"]'
+VALPARAM_simplemultigpu			= -s CL_VAL_PARAM='["-cl-fast-relaxed-math"]'
+VALPARAM_sobelfilter			= -s CL_VAL_PARAM='["-cl-fast-relaxed-math"]'
+VALPARAM_sortingnetworks		= -s CL_VAL_PARAM='["-D LOCAL_SIZE_LIMIT:512"]'
+VALPARAM_transpose				= -s CL_VAL_PARAM='["-cl-fast-relaxed-math"]'
+VALPARAM_tridiagonal			= -s CL_VAL_PARAM='["-cl-fast-relaxed-math","-D BLOCK_DIM:16","-D system_size:128","-D REORDER"]'
 VALPARAM_vectoradd				= -s CL_VAL_PARAM='[""]'
 
 else
@@ -277,7 +273,6 @@ COPY_matvecmul					= cp oclMatVecMul.cl $(BUILD_FOLDER) &&
 COPY_mersennetwister			= mkdir -p $(BUILD_FOLDER)/data/ && cp MersenneTwister.cl $(BUILD_FOLDER) && cp data/MersenneTwister.dat $(BUILD_FOLDER) && cp data/MersenneTwister.raw $(BUILD_FOLDER)/data/ && 
 COPY_nbody						= cp oclNbodyKernel.cl $(BUILD_FOLDER) &&
 COPY_particles					= cp BitonicSort_b.cl $(BUILD_FOLDER) && cp Particles.cl $(BUILD_FOLDER) &&
-COPY_postprocessgl				= cp PostprocessGL.cl $(BUILD_FOLDER) && 
 COPY_quasirandomgenerator		= cp QuasirandomGenerator.cl $(BUILD_FOLDER) && 
 COPY_radixsort					= cp RadixSort.cl $(BUILD_FOLDER) && cp Scan_b.cl $(BUILD_FOLDER) && 
 COPY_recursivegaussian			= mkdir -p $(BUILD_FOLDER)/data/ && cp RecursiveGaussian.cl $(BUILD_FOLDER) &&  cp data/StoneRGB.ppm $(BUILD_FOLDER)/data/ &&
@@ -301,9 +296,9 @@ all: \
 
 all_1: bandwidthtest_sample blackscholes_sample boxfilter_sample convolutionseparable_sample copycomputeoverlap_sample dct8x8_sample devicequery_sample dotproduct_sample dxtcompression_sample fdtd3d_sample
 
-all_2: hiddenmarkovmodel_sample histogram_sample matrixmul_sample matvecmul_sample mersennetwister_sample
+all_2: hiddenmarkovmodel_sample histogram_sample matrixmul_sample matvecmul_sample mersennetwister_sample nbody_sample particles_sample radixsort_sample recursivegaussian_sample
 
-all_3: 
+all_3: reduction_sample scan_sample simplegl_sample simplemultigpu_sample sobelfilter_sample sortingnetworks_sample transpose_sample tridiagonal_sample vectoradd_sample
 
 # Create build folder is necessary))
 mkdir:
@@ -376,10 +371,6 @@ nbody_sample: mkdir
 particles_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclParticles/)
 	$(COPY_particles)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_particles)				$(INCLUDES_particles)				$(SOURCES_particles)				$(VALPARAM_particles)				$(KERNEL_particles)				-o $(BUILD_FOLDER)$(PREFIX)particles$(EXTENSION)
-
-postprocessgl_sample: mkdir
-	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclPostprocessGL/)
-	$(COPY_postprocessgl)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_postprocessgl)			$(INCLUDES_postprocessgl)			$(SOURCES_postprocessgl)			$(VALPARAM_postprocessgl)			$(KERNEL_postprocessgl)			-o $(BUILD_FOLDER)$(PREFIX)postprocessgl$(EXTENSION)
 
 quasirandomgenerator_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclQuasirandomGenerator/)

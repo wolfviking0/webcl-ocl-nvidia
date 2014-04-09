@@ -44,7 +44,7 @@
 #define MAX_EPSILON_ERROR 5.00f
 #define THRESHOLD         0.30f
 #define GRID_SIZE         64
-#define NUM_PARTICLES     1024 * 4
+#define NUM_PARTICLES     1024 * 8
 
 #define REFRESH_DELAY	  10 //ms
 

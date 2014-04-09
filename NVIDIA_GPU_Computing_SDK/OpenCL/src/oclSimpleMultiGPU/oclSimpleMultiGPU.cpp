@@ -55,6 +55,19 @@ int main(int argc, char **argv)
     shrSetLogFileName ("oclSimpleMultiGPU.txt");
     shrLog("%s Starting, Array = %u float values...\n\n", argv[0], DATA_N); 
 
+    int use_gpu = 0;
+    for(int i = 0; i < argc && argv; i++)
+    {
+        if(!argv[i])
+            continue;
+          
+        if(strstr(argv[i], "cpu"))
+            use_gpu = 0;        
+
+        else if(strstr(argv[i], "gpu"))
+            use_gpu = 1;
+    }
+    
     // OpenCL
     cl_platform_id cpPlatform;
     cl_uint ciDeviceCount;
@@ -99,10 +112,10 @@ int main(int argc, char **argv)
     shrLog("clGetPlatformID...\n"); 
 
     //Get the devices
-    ciErrNum = clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, 0, NULL, &ciDeviceCount);
+    ciErrNum = clGetDeviceIDs(cpPlatform, use_gpu?CL_DEVICE_TYPE_GPU:CL_DEVICE_TYPE_CPU, 0, NULL, &ciDeviceCount);
     oclCheckError(ciErrNum, CL_SUCCESS);
     cdDevices = (cl_device_id *)malloc(ciDeviceCount * sizeof(cl_device_id) );
-    ciErrNum = clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, ciDeviceCount, cdDevices, NULL);
+    ciErrNum = clGetDeviceIDs(cpPlatform, use_gpu?CL_DEVICE_TYPE_GPU:CL_DEVICE_TYPE_CPU, ciDeviceCount, cdDevices, NULL);
     oclCheckError(ciErrNum, CL_SUCCESS);
     shrLog("clGetDeviceIDs...\n"); 
 

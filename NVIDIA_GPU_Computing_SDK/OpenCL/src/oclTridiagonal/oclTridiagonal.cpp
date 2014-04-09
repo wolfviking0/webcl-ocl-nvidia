@@ -158,6 +158,19 @@ int main(int argc, const char** argv)
     shrSetLogFileName ("oclTridiagonal.txt");
     shrLog("%s Starting...\n\n", argv[0]); 
 
+    int use_gpu = 0;
+    for(int i = 0; i < argc && argv; i++)
+    {
+        if(!argv[i])
+            continue;
+          
+        if(strstr(argv[i], "cpu"))
+            use_gpu = 0;        
+
+        else if(strstr(argv[i], "gpu"))
+            use_gpu = 1;
+    }
+    
 	int num_systems = 128 * 128;
 	int system_size = 128;
 	
@@ -171,10 +184,10 @@ int main(int argc, const char** argv)
     oclCheckError(errcode, CL_SUCCESS);
 
     // get all the devices
-    errcode = clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, 0, NULL, &allDevCount);
+    errcode = clGetDeviceIDs(cpPlatform, use_gpu?CL_DEVICE_TYPE_GPU:CL_DEVICE_TYPE_CPU, 0, NULL, &allDevCount);
     oclCheckError(errcode, CL_SUCCESS);
     cdAllDevices = (cl_device_id *)malloc(allDevCount * sizeof(cl_device_id) );
-    errcode = clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, allDevCount, cdAllDevices, NULL);
+    errcode = clGetDeviceIDs(cpPlatform, use_gpu?CL_DEVICE_TYPE_GPU:CL_DEVICE_TYPE_CPU, allDevCount, cdAllDevices, NULL);
     oclCheckError(errcode, CL_SUCCESS);
 	
 	// create the context
