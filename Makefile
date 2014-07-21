@@ -7,11 +7,12 @@
 #
 
 # Default parameter
-DEB = 0
-VAL = 0
-NAT = 0
-ORIG= 0
-FAST= 1
+DEB  		= 0
+VAL  		= 0
+NAT  		= 0
+ORIG 		= 0
+FAST 		= 1
+NODEJS 		= 0
 
 # Chdir function
 CHDIR_SHELL := $(SHELL)
@@ -61,6 +62,7 @@ endif
 CXX = $(EMSCRIPTEN_ROOT)/em++
 CC  = $(EMSCRIPTEN_ROOT)/emcc
 
+PRELOAD_FILE = --preload-file
 BUILD_FOLDER = $(CURRENT_ROOT)/js/
 EXTENSION = .js
 GLOBAL =
@@ -75,6 +77,17 @@ else
 $(info ************ EMSCRIPTEN : DEBUG         = 0 ************)
 
 CFLAGS = -s OPT_LEVEL=3 -s DEBUG_LEVEL=0 -s CL_PRINT_TRACE=0 -s DISABLE_EXCEPTION_CATCHING=0 -s WARN_ON_UNDEFINED_SYMBOLS=1 -s CL_DEBUG=0 -s CL_GRAB_TRACE=0 -s CL_CHECK_VALID_OBJECT=0 -DGPU_PROFILING
+endif
+
+ifeq ($(NODEJS),1)
+$(info ************ EMSCRIPTEN : NODE JS       = 1 ************)
+
+PREFIX = node_
+
+PRELOAD_FILE = --embed-file
+
+else
+$(info ************ EMSCRIPTEN : NODE JS       = 0 ************)
 endif
 
 ifeq ($(VAL),1)
@@ -164,35 +177,35 @@ INCLUDES_vectoradd				= $(INCLUDES_common)
 ifeq ($(NAT),0)
 
 KERNEL_bandwidthtest			= 
-KERNEL_blackscholes				= --preload-file BlackScholes.cl
-KERNEL_boxfilter				= --preload-file BoxFilter.cl --preload-file data/lenaRGB.ppm
-KERNEL_convolutionseparable		= --preload-file ConvolutionSeparable.cl
-KERNEL_copycomputeoverlap		= --preload-file VectorHypot.cl
-KERNEL_dct8x8					= --preload-file DCT8x8.cl
+KERNEL_blackscholes				= $(PRELOAD_FILE) BlackScholes.cl
+KERNEL_boxfilter				= $(PRELOAD_FILE) BoxFilter.cl $(PRELOAD_FILE) data/lenaRGB.ppm
+KERNEL_convolutionseparable		= $(PRELOAD_FILE) ConvolutionSeparable.cl
+KERNEL_copycomputeoverlap		= $(PRELOAD_FILE) VectorHypot.cl
+KERNEL_dct8x8					= $(PRELOAD_FILE) DCT8x8.cl
 KERNEL_devicequery				=
-KERNEL_dotproduct				= --preload-file DotProduct.cl
-KERNEL_dxtcompression			= --preload-file DXTCompression.cl --preload-file data/lena_ref.dds --preload-file data/lena_std.ppm
-KERNEL_fdtd3d					= --preload-file FDTD3d.cl
-KERNEL_hiddenmarkovmodel		= --preload-file Viterbi.cl
-KERNEL_histogram				= --preload-file Histogram64.cl --preload-file Histogram256.cl
-KERNEL_matrixmul				= --preload-file matrixMul.cl  --preload-file matrixMul.hpp
-KERNEL_matvecmul				= --preload-file oclMatVecMul.cl
-KERNEL_mersennetwister			= --preload-file MersenneTwister.cl --preload-file data/MersenneTwister.dat --preload-file data/MersenneTwister.raw
-KERNEL_nbody					= --preload-file oclNbodyKernel.cl
-KERNEL_particles				= --preload-file BitonicSort_b.cl --preload-file Particles.cl
-KERNEL_postprocessgl			= --preload-file PostprocessGL.cl
-KERNEL_quasirandomgenerator		= --preload-file QuasirandomGenerator.cl
-KERNEL_radixsort				= --preload-file RadixSort.cl --preload-file Scan_b.cl
-KERNEL_recursivegaussian		= --preload-file RecursiveGaussian.cl --preload-file data/StoneRGB.ppm
-KERNEL_reduction				= --preload-file oclReduction_kernel.cl
-KERNEL_scan						= --preload-file Scan.cl
-KERNEL_simplegl					= --preload-file simpleGL.cl
-KERNEL_simplemultigpu			= --preload-file simpleMultiGPU.cl
-KERNEL_sobelfilter				= --preload-file SobelFilter.cl --preload-file data/StoneRGB.ppm
-KERNEL_sortingnetworks			= --preload-file BitonicSort.cl
-KERNEL_transpose				= --preload-file transpose.cl
-KERNEL_tridiagonal				= --preload-file cyclic_kernels.cl --preload-file pcr_kernels.cl --preload-file sweep_kernels.cl
-KERNEL_vectoradd				= --preload-file VectorAdd.cl
+KERNEL_dotproduct				= $(PRELOAD_FILE) DotProduct.cl
+KERNEL_dxtcompression			= $(PRELOAD_FILE) DXTCompression.cl $(PRELOAD_FILE) data/lena_ref.dds $(PRELOAD_FILE) data/lena_std.ppm
+KERNEL_fdtd3d					= $(PRELOAD_FILE) FDTD3d.cl
+KERNEL_hiddenmarkovmodel		= $(PRELOAD_FILE) Viterbi.cl
+KERNEL_histogram				= $(PRELOAD_FILE) Histogram64.cl $(PRELOAD_FILE) Histogram256.cl
+KERNEL_matrixmul				= $(PRELOAD_FILE) matrixMul.cl  $(PRELOAD_FILE) matrixMul.hpp
+KERNEL_matvecmul				= $(PRELOAD_FILE) oclMatVecMul.cl
+KERNEL_mersennetwister			= $(PRELOAD_FILE) MersenneTwister.cl $(PRELOAD_FILE) data/MersenneTwister.dat $(PRELOAD_FILE) data/MersenneTwister.raw
+KERNEL_nbody					= $(PRELOAD_FILE) oclNbodyKernel.cl
+KERNEL_particles				= $(PRELOAD_FILE) BitonicSort_b.cl $(PRELOAD_FILE) Particles.cl
+KERNEL_postprocessgl			= $(PRELOAD_FILE) PostprocessGL.cl
+KERNEL_quasirandomgenerator		= $(PRELOAD_FILE) QuasirandomGenerator.cl
+KERNEL_radixsort				= $(PRELOAD_FILE) RadixSort.cl $(PRELOAD_FILE) Scan_b.cl
+KERNEL_recursivegaussian		= $(PRELOAD_FILE) RecursiveGaussian.cl $(PRELOAD_FILE) data/StoneRGB.ppm
+KERNEL_reduction				= $(PRELOAD_FILE) oclReduction_kernel.cl
+KERNEL_scan						= $(PRELOAD_FILE) Scan.cl
+KERNEL_simplegl					= $(PRELOAD_FILE) simpleGL.cl
+KERNEL_simplemultigpu			= $(PRELOAD_FILE) simpleMultiGPU.cl
+KERNEL_sobelfilter				= $(PRELOAD_FILE) SobelFilter.cl $(PRELOAD_FILE) data/StoneRGB.ppm
+KERNEL_sortingnetworks			= $(PRELOAD_FILE) BitonicSort.cl
+KERNEL_transpose				= $(PRELOAD_FILE) transpose.cl
+KERNEL_tridiagonal				= $(PRELOAD_FILE) cyclic_kernels.cl $(PRELOAD_FILE) pcr_kernels.cl $(PRELOAD_FILE) sweep_kernels.cl
+KERNEL_vectoradd				= $(PRELOAD_FILE) VectorAdd.cl
 
 CFLAGS_bandwidthtest			= -s TOTAL_MEMORY=1024*1024*100
 CFLAGS_blackscholes				= -s TOTAL_MEMORY=1024*1024*100
