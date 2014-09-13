@@ -109,13 +109,13 @@ $(info ************ EMSCRIPTEN : FAST_COMPILER = 0 ************)
 endif
 
 endif
-	
+
 SOURCES_common					= $(CURRENT_ROOT)/NVIDIA_GPU_Computing_SDK/OpenCL/common/src/oclUtils.cpp $(CURRENT_ROOT)//NVIDIA_GPU_Computing_SDK/shared/src/cmd_arg_reader.cpp $(CURRENT_ROOT)//NVIDIA_GPU_Computing_SDK/shared/src/shrUtils.cpp
 
 SOURCES_bandwidthtest			= $(SOURCES_common) oclBandwidthTest.cpp
 SOURCES_blackscholes			= $(SOURCES_common) src/main.cpp src/oclBlackScholes_gold.cpp src/oclBlackScholes_launcher.cpp
-SOURCES_boxfilter				= $(SOURCES_common) BoxFilterHost.cpp oclBoxFilter.cpp 
-SOURCES_convolutionseparable	= $(SOURCES_common) src/main.cpp src/oclConvolutionSeparable_gold.cpp src/oclConvolutionSeparable_launcher.cpp 
+SOURCES_boxfilter				= $(SOURCES_common) BoxFilterHost.cpp oclBoxFilter.cpp
+SOURCES_convolutionseparable	= $(SOURCES_common) src/main.cpp src/oclConvolutionSeparable_gold.cpp src/oclConvolutionSeparable_launcher.cpp
 SOURCES_copycomputeoverlap		= $(SOURCES_common) oclCopyComputeOverlap.cpp
 SOURCES_dct8x8					= $(SOURCES_common) src/main.cpp src/oclDCT8x8_gold.cpp src/oclDCT8x8_launcher.cpp
 SOURCES_devicequery				= $(SOURCES_common) oclDeviceQuery.cpp
@@ -124,19 +124,19 @@ SOURCES_dxtcompression			= $(SOURCES_common) block.cpp oclDXTCompression.cpp
 SOURCES_fdtd3d					= $(SOURCES_common) src/FDTD3dGPU.cpp src/FDTD3dReference.cpp src/oclFDTD3d.cpp
 SOURCES_hiddenmarkovmodel		= $(SOURCES_common) HMM.cpp oclHiddenMarkovModel.cpp ViterbiCPU.cpp
 SOURCES_histogram				= $(SOURCES_common) src/main.cpp src/oclHistogram_gold.cpp src/oclHistogram64_launcher.cpp src/oclHistogram256_launcher.cpp
-SOURCES_matrixmul				= $(SOURCES_common) matrixMul_gold.cpp oclMatrixMul.cpp 
+SOURCES_matrixmul				= $(SOURCES_common) matrixMul_gold.cpp oclMatrixMul.cpp
 SOURCES_matvecmul				= $(SOURCES_common) oclMatVecMul.cpp
-SOURCES_mersennetwister			= $(SOURCES_common) src/genmtrand.cpp src/oclMersenneTwister_gold.cpp src/oclMersenneTwister.cpp 
-SOURCES_nbody					= $(SOURCES_common) src/oclBodySystemCpu.cpp src/oclBodySystemOpencl.cpp src/oclBodySystemOpenclLaunch.cpp src/oclNbody.cpp src/oclNbodyGold.cpp src/oclRenderParticles.cpp src/param.cpp src/paramgl.cpp 
-SOURCES_particles				= $(SOURCES_common) src/main.cpp src/oclBitonicSort_launcher.cpp src/oclManager.cpp src/oclParticles_launcher.cpp src/param.cpp src/paramgl.cpp src/particleSystem_class.cpp src/particleSystemHost.cpp src/render_particles.cpp src/shaders.cpp 
+SOURCES_mersennetwister			= $(SOURCES_common) src/genmtrand.cpp src/oclMersenneTwister_gold.cpp src/oclMersenneTwister.cpp
+SOURCES_nbody					= $(SOURCES_common) src/oclBodySystemCpu.cpp src/oclBodySystemOpencl.cpp src/oclBodySystemOpenclLaunch.cpp src/oclNbody.cpp src/oclNbodyGold.cpp src/oclRenderParticles.cpp src/param.cpp src/paramgl.cpp
+SOURCES_particles				= $(SOURCES_common) src/main.cpp src/oclBitonicSort_launcher.cpp src/oclManager.cpp src/oclParticles_launcher.cpp src/param.cpp src/paramgl.cpp src/particleSystem_class.cpp src/particleSystemHost.cpp src/render_particles.cpp src/shaders.cpp
 SOURCES_quasirandomgenerator	= $(SOURCES_common) oclQuasirandomGenerator_gold.cpp oclQuasirandomGenerator.cpp
 SOURCES_radixsort				= $(SOURCES_common) src/oclRadixSort.cpp src/RadixSort.cpp src/Scan.cpp
-SOURCES_recursivegaussian		= $(SOURCES_common) src/oclRecursiveGaussian.cpp src/RecursiveGaussianHost.cpp 
-SOURCES_reduction				= $(SOURCES_common) oclReduction.cpp 
-SOURCES_scan					= $(SOURCES_common) src/main.cpp src/oclScan_gold.cpp src/oclScan_launcher.cpp 
+SOURCES_recursivegaussian		= $(SOURCES_common) src/oclRecursiveGaussian.cpp src/RecursiveGaussianHost.cpp
+SOURCES_reduction				= $(SOURCES_common) oclReduction.cpp
+SOURCES_scan					= $(SOURCES_common) src/main.cpp src/oclScan_gold.cpp src/oclScan_launcher.cpp
 SOURCES_simplegl				= $(SOURCES_common) oclSimpleGL.cpp
 SOURCES_simplemultigpu			= $(SOURCES_common) oclSimpleMultiGPU.cpp
-SOURCES_sobelfilter				= $(SOURCES_common) DeviceManager.cpp oclSobelFilter.cpp SobelFilterHost.cpp 
+SOURCES_sobelfilter				= $(SOURCES_common) DeviceManager.cpp oclSobelFilter.cpp SobelFilterHost.cpp
 SOURCES_sortingnetworks			= $(SOURCES_common) src/main.cpp src/oclBitonicSort_launcher.cpp src/oclSortingNetworks_validate.cpp
 SOURCES_transpose				= $(SOURCES_common) oclTranspose.cpp transpose_gold.cpp
 SOURCES_tridiagonal				= $(SOURCES_common) oclTridiagonal.cpp
@@ -161,7 +161,7 @@ INCLUDES_matvecmul				= $(INCLUDES_common)
 INCLUDES_mersennetwister		= $(INCLUDES_common) -I./inc/
 INCLUDES_nbody					= $(INCLUDES_common) -I./inc/
 INCLUDES_particles				= $(INCLUDES_common) -I./inc/
-INCLUDES_quasirandomgenerator	= $(INCLUDES_common) 
+INCLUDES_quasirandomgenerator	= $(INCLUDES_common)
 INCLUDES_radixsort				= $(INCLUDES_common) -I./inc/
 INCLUDES_recursivegaussian		= $(INCLUDES_common) -I./inc/
 INCLUDES_reduction				= $(INCLUDES_common) -I./
@@ -176,7 +176,7 @@ INCLUDES_vectoradd				= $(INCLUDES_common)
 
 ifeq ($(NAT),0)
 
-KERNEL_bandwidthtest			= 
+KERNEL_bandwidthtest			=
 KERNEL_blackscholes				= $(PRELOAD_FILE) BlackScholes.cl
 KERNEL_boxfilter				= $(PRELOAD_FILE) BoxFilter.cl $(PRELOAD_FILE) data/lenaRGB.ppm
 KERNEL_convolutionseparable		= $(PRELOAD_FILE) ConvolutionSeparable.cl
@@ -224,7 +224,7 @@ CFLAGS_matvecmul				= -s TOTAL_MEMORY=1024*1024*300
 CFLAGS_mersennetwister			= -s TOTAL_MEMORY=1024*1024*200
 CFLAGS_nbody					= -s TOTAL_MEMORY=1024*1024*100 -s GL_FFP_ONLY=1 -s LEGACY_GL_EMULATION=1
 CFLAGS_particles				= -s TOTAL_MEMORY=1024*1024*100 -s GL_FFP_ONLY=1 -s LEGACY_GL_EMULATION=1
-CFLAGS_quasirandomgenerator		= -s TOTAL_MEMORY=1024*1024*100 
+CFLAGS_quasirandomgenerator		= -s TOTAL_MEMORY=1024*1024*100
 CFLAGS_radixsort				=
 CFLAGS_recursivegaussian		= -s TOTAL_MEMORY=1024*1024*100 -s GL_FFP_ONLY=1 -s LEGACY_GL_EMULATION=1
 CFLAGS_reduction				= -s TOTAL_MEMORY=1024*1024*100
@@ -237,7 +237,7 @@ CFLAGS_transpose				= -s TOTAL_MEMORY=1024*1024*100
 CFLAGS_tridiagonal				= -s TOTAL_MEMORY=1024*1024*100
 CFLAGS_vectoradd				= -s TOTAL_MEMORY=1024*1024*200
 
-VALPARAM_bandwidthtest			= 
+VALPARAM_bandwidthtest			=
 VALPARAM_blackscholes			= -s CL_VAL_PARAM='[""]'
 VALPARAM_boxfilter				= -s CL_VAL_PARAM='["-cl-fast-relaxed-math", "-D USETEXTURE"]'
 VALPARAM_convolutionseparable	= -s CL_VAL_PARAM='["-cl-fast-relaxed-math", "-D KERNEL_RADIUS:8", "-D ROWS_BLOCKDIM_X:16", "-D COLUMNS_BLOCKDIM_X:16", "-D ROWS_BLOCKDIM_Y:4", "-D COLUMNS_BLOCKDIM_Y:8", "-D ROWS_RESULT_STEPS:8", "-D COLUMNS_RESULT_STEPS:8", "-D ROWS_HALO_STEPS:1", "-D COLUMNS_HALO_STEPS:1"]'
@@ -269,7 +269,7 @@ VALPARAM_vectoradd				= -s CL_VAL_PARAM='[""]'
 
 else
 
-COPY_bandwidthtest				=  
+COPY_bandwidthtest				=
 COPY_blackscholes				= cp BlackScholes.cl $(BUILD_FOLDER) &&
 COPY_boxfilter					= mkdir -p $(BUILD_FOLDER)/data/ && cp BoxFilter.cl $(BUILD_FOLDER) && cp data/lenaRGB.ppm $(BUILD_FOLDER)/data/ &&
 COPY_convolutionseparable		= cp ConvolutionSeparable.cl $(BUILD_FOLDER) &&
@@ -281,27 +281,27 @@ COPY_dxtcompression				= mkdir -p $(BUILD_FOLDER)/data/ && cp DXTCompression.cl 
 COPY_fdtd3d						= cp FDTD3d.cl $(BUILD_FOLDER) &&
 COPY_hiddenmarkovmodel			= cp Viterbi.cl $(BUILD_FOLDER) &&
 COPY_histogram					= cp Histogram64.cl $(BUILD_FOLDER) && cp Histogram256.cl $(BUILD_FOLDER) &&
-COPY_matrixmul					= cp matrixMul.cl $(BUILD_FOLDER) && cp matrixMul.hpp $(BUILD_FOLDER) && 
+COPY_matrixmul					= cp matrixMul.cl $(BUILD_FOLDER) && cp matrixMul.hpp $(BUILD_FOLDER) &&
 COPY_matvecmul					= cp oclMatVecMul.cl $(BUILD_FOLDER) &&
-COPY_mersennetwister			= mkdir -p $(BUILD_FOLDER)/data/ && cp MersenneTwister.cl $(BUILD_FOLDER) && cp data/MersenneTwister.dat $(BUILD_FOLDER) && cp data/MersenneTwister.raw $(BUILD_FOLDER)/data/ && 
+COPY_mersennetwister			= mkdir -p $(BUILD_FOLDER)/data/ && cp MersenneTwister.cl $(BUILD_FOLDER) && cp data/MersenneTwister.dat $(BUILD_FOLDER) && cp data/MersenneTwister.raw $(BUILD_FOLDER)/data/ &&
 COPY_nbody						= cp oclNbodyKernel.cl $(BUILD_FOLDER) &&
 COPY_particles					= cp BitonicSort_b.cl $(BUILD_FOLDER) && cp Particles.cl $(BUILD_FOLDER) &&
-COPY_quasirandomgenerator		= cp QuasirandomGenerator.cl $(BUILD_FOLDER) && 
-COPY_radixsort					= cp RadixSort.cl $(BUILD_FOLDER) && cp Scan_b.cl $(BUILD_FOLDER) && 
+COPY_quasirandomgenerator		= cp QuasirandomGenerator.cl $(BUILD_FOLDER) &&
+COPY_radixsort					= cp RadixSort.cl $(BUILD_FOLDER) && cp Scan_b.cl $(BUILD_FOLDER) &&
 COPY_recursivegaussian			= mkdir -p $(BUILD_FOLDER)/data/ && cp RecursiveGaussian.cl $(BUILD_FOLDER) &&  cp data/StoneRGB.ppm $(BUILD_FOLDER)/data/ &&
 COPY_reduction					= cp oclReduction_kernel.cl $(BUILD_FOLDER) &&
 COPY_scan						= cp Scan.cl $(BUILD_FOLDER) &&
 COPY_simplegl					= cp simpleGL.cl $(BUILD_FOLDER) &&
 COPY_simplemultigpu				= cp simpleMultiGPU.cl $(BUILD_FOLDER) &&
 COPY_sobelfilter				= cp SobelFilter.cl $(BUILD_FOLDER) && cp data/StoneRGB.ppm $(BUILD_FOLDER) &&
-COPY_sortingnetworks			= cp BitonicSort.cl $(BUILD_FOLDER) && 
-COPY_transpose					= cp transpose.cl $(BUILD_FOLDER) && 
-COPY_tridiagonal				= cp cyclic_kernels.cl $(BUILD_FOLDER) && cp pcr_kernels.cl $(BUILD_FOLDER) && cp sweep_kernels.cl $(BUILD_FOLDER) && 
-COPY_vectoradd					= cp VectorAdd.cl $(BUILD_FOLDER) && 
+COPY_sortingnetworks			= cp BitonicSort.cl $(BUILD_FOLDER) &&
+COPY_transpose					= cp transpose.cl $(BUILD_FOLDER) &&
+COPY_tridiagonal				= cp cyclic_kernels.cl $(BUILD_FOLDER) && cp pcr_kernels.cl $(BUILD_FOLDER) && cp sweep_kernels.cl $(BUILD_FOLDER) &&
+COPY_vectoradd					= cp VectorAdd.cl $(BUILD_FOLDER) &&
 
 endif
 
-.PHONY:    
+.PHONY:
 	all clean
 
 all: \
@@ -319,11 +319,11 @@ mkdir:
 
 bandwidthtest_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclBandwidthTest/)
-	$(COPY_bandwidthtest) 			$(GLOBAL) 	$(CXX)	$(CFLAGS) 	$(CFLAGS_bandwidthtest)			$(INCLUDES_bandwidthtest)			$(SOURCES_bandwidthtest)			$(VALPARAM_bandwidthtest) 			$(KERNEL_bandwidthtest) 		-o $(BUILD_FOLDER)$(PREFIX)bandwidthtest$(EXTENSION) 
+	$(COPY_bandwidthtest) 			$(GLOBAL) 	$(CXX)	$(CFLAGS) 	$(CFLAGS_bandwidthtest)			$(INCLUDES_bandwidthtest)			$(SOURCES_bandwidthtest)			$(VALPARAM_bandwidthtest) 			$(KERNEL_bandwidthtest) 		-o $(BUILD_FOLDER)$(PREFIX)bandwidthtest$(EXTENSION)
 
 blackscholes_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclBlackScholes/)
-	$(COPY_blackscholes) 			$(GLOBAL) 	$(CXX)	$(CFLAGS)	$(CFLAGS_blackscholes)			$(INCLUDES_blackscholes)			$(SOURCES_blackscholes)				$(VALPARAM_blackscholes) 			$(KERNEL_blackscholes) 			-o $(BUILD_FOLDER)$(PREFIX)blackscholes$(EXTENSION) 
+	$(COPY_blackscholes) 			$(GLOBAL) 	$(CXX)	$(CFLAGS)	$(CFLAGS_blackscholes)			$(INCLUDES_blackscholes)			$(SOURCES_blackscholes)				$(VALPARAM_blackscholes) 			$(KERNEL_blackscholes) 			-o $(BUILD_FOLDER)$(PREFIX)blackscholes$(EXTENSION)
 
 boxfilter_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclBoxFilter/)
@@ -335,27 +335,27 @@ convolutionseparable_sample: mkdir
 
 copycomputeoverlap_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclCopyComputeOverlap/)
-	$(COPY_copycomputeoverlap)		$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_copycomputeoverlap)	$(INCLUDES_copycomputeoverlap)		$(SOURCES_copycomputeoverlap)		$(VALPARAM_copycomputeoverlap)		$(KERNEL_copycomputeoverlap)	-o $(BUILD_FOLDER)$(PREFIX)copycomputeoverlap$(EXTENSION)	
+	$(COPY_copycomputeoverlap)		$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_copycomputeoverlap)	$(INCLUDES_copycomputeoverlap)		$(SOURCES_copycomputeoverlap)		$(VALPARAM_copycomputeoverlap)		$(KERNEL_copycomputeoverlap)	-o $(BUILD_FOLDER)$(PREFIX)copycomputeoverlap$(EXTENSION)
 
 dct8x8_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclDCT8x8/)
-	$(COPY_dct8x8)					$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_dct8x8)				$(INCLUDES_dct8x8)					$(SOURCES_dct8x8)					$(VALPARAM_dct8x8)					$(KERNEL_dct8x8)				-o $(BUILD_FOLDER)$(PREFIX)dct8x8$(EXTENSION)	
+	$(COPY_dct8x8)					$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_dct8x8)				$(INCLUDES_dct8x8)					$(SOURCES_dct8x8)					$(VALPARAM_dct8x8)					$(KERNEL_dct8x8)				-o $(BUILD_FOLDER)$(PREFIX)dct8x8$(EXTENSION)
 
 devicequery_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclDeviceQuery/)
-	$(COPY_devicequery)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_devicequery)			$(INCLUDES_devicequery)				$(SOURCES_devicequery)				$(VALPARAM_devicequery)				$(KERNEL_devicequery)			-o $(BUILD_FOLDER)$(PREFIX)devicequery$(EXTENSION)	
+	$(COPY_devicequery)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_devicequery)			$(INCLUDES_devicequery)				$(SOURCES_devicequery)				$(VALPARAM_devicequery)				$(KERNEL_devicequery)			-o $(BUILD_FOLDER)$(PREFIX)devicequery$(EXTENSION)
 
 dotproduct_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclDotProduct/)
-	$(COPY_dotproduct)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_dotproduct)			$(INCLUDES_dotproduct)				$(SOURCES_dotproduct)				$(VALPARAM_dotproduct)				$(KERNEL_dotproduct)			-o $(BUILD_FOLDER)$(PREFIX)dotproduct$(EXTENSION)	
+	$(COPY_dotproduct)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_dotproduct)			$(INCLUDES_dotproduct)				$(SOURCES_dotproduct)				$(VALPARAM_dotproduct)				$(KERNEL_dotproduct)			-o $(BUILD_FOLDER)$(PREFIX)dotproduct$(EXTENSION)
 
 dxtcompression_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclDXTCompression/)
-	$(COPY_dxtcompression)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_dxtcompression)		$(INCLUDES_dxtcompression)			$(SOURCES_dxtcompression)			$(VALPARAM_dxtcompression)			$(KERNEL_dxtcompression)		-o $(BUILD_FOLDER)$(PREFIX)dxtcompression$(EXTENSION)	
+	$(COPY_dxtcompression)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_dxtcompression)		$(INCLUDES_dxtcompression)			$(SOURCES_dxtcompression)			$(VALPARAM_dxtcompression)			$(KERNEL_dxtcompression)		-o $(BUILD_FOLDER)$(PREFIX)dxtcompression$(EXTENSION)
 
 fdtd3d_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclFDTD3d/)
-	$(COPY_fdtd3d)					$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_fdtd3d)				$(INCLUDES_fdtd3d)					$(SOURCES_fdtd3d)					$(VALPARAM_fdtd3d)					$(KERNEL_fdtd3d)				-o $(BUILD_FOLDER)$(PREFIX)fdtd3d$(EXTENSION)	
+	$(COPY_fdtd3d)					$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_fdtd3d)				$(INCLUDES_fdtd3d)					$(SOURCES_fdtd3d)					$(VALPARAM_fdtd3d)					$(KERNEL_fdtd3d)				-o $(BUILD_FOLDER)$(PREFIX)fdtd3d$(EXTENSION)
 
 hiddenmarkovmodel_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclHiddenMarkovModel/)
@@ -375,7 +375,7 @@ matvecmul_sample: mkdir
 
 mersennetwister_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclMersenneTwister/)
-	$(COPY_mersennetwister)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_mersennetwister)		$(INCLUDES_mersennetwister)			$(SOURCES_mersennetwister)			$(VALPARAM_mersennetwister)			$(KERNEL_mersennetwister)		-o $(BUILD_FOLDER)$(PREFIX)mersennetwister$(EXTENSION)	
+	$(COPY_mersennetwister)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_mersennetwister)		$(INCLUDES_mersennetwister)			$(SOURCES_mersennetwister)			$(VALPARAM_mersennetwister)			$(KERNEL_mersennetwister)		-o $(BUILD_FOLDER)$(PREFIX)mersennetwister$(EXTENSION)
 
 nbody_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclNbody/)
@@ -411,15 +411,15 @@ simplegl_sample: mkdir
 
 simplemultigpu_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclSimpleMultiGPU/)
-	$(COPY_simplemultigpu)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_simplemultigpu)		$(INCLUDES_simplemultigpu)			$(SOURCES_simplemultigpu)			$(VALPARAM_simplemultigpu)			$(KERNEL_simplemultigpu)		-o $(BUILD_FOLDER)$(PREFIX)simplemultigpu$(EXTENSION)	
+	$(COPY_simplemultigpu)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_simplemultigpu)		$(INCLUDES_simplemultigpu)			$(SOURCES_simplemultigpu)			$(VALPARAM_simplemultigpu)			$(KERNEL_simplemultigpu)		-o $(BUILD_FOLDER)$(PREFIX)simplemultigpu$(EXTENSION)
 
 sobelfilter_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclSobelFilter/)
-	$(COPY_sobelfilter)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_sobelfilter)			$(INCLUDES_sobelfilter)				$(SOURCES_sobelfilter)				$(VALPARAM_sobelfilter)				$(KERNEL_sobelfilter)			-o $(BUILD_FOLDER)$(PREFIX)sobelfilter$(EXTENSION)	
+	$(COPY_sobelfilter)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_sobelfilter)			$(INCLUDES_sobelfilter)				$(SOURCES_sobelfilter)				$(VALPARAM_sobelfilter)				$(KERNEL_sobelfilter)			-o $(BUILD_FOLDER)$(PREFIX)sobelfilter$(EXTENSION)
 
 sortingnetworks_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclSortingNetworks/)
-	$(COPY_sortingnetworks)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_sortingnetworks)		$(INCLUDES_sortingnetworks)			$(SOURCES_sortingnetworks)			$(VALPARAM_sortingnetworks)			$(KERNEL_sortingnetworks)		-o $(BUILD_FOLDER)$(PREFIX)sortingnetworks$(EXTENSION)	
+	$(COPY_sortingnetworks)			$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_sortingnetworks)		$(INCLUDES_sortingnetworks)			$(SOURCES_sortingnetworks)			$(VALPARAM_sortingnetworks)			$(KERNEL_sortingnetworks)		-o $(BUILD_FOLDER)$(PREFIX)sortingnetworks$(EXTENSION)
 
 transpose_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclTranspose/)
@@ -427,7 +427,7 @@ transpose_sample: mkdir
 
 tridiagonal_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclTridiagonal/)
-	$(COPY_tridiagonal)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_tridiagonal)			$(INCLUDES_tridiagonal)				$(SOURCES_tridiagonal)				$(VALPARAM_tridiagonal)				$(KERNEL_tridiagonal)			-o $(BUILD_FOLDER)$(PREFIX)tridiagonal$(EXTENSION)	
+	$(COPY_tridiagonal)				$(GLOBAL)	$(CXX)	$(CFLAGS)	$(CFLAGS_tridiagonal)			$(INCLUDES_tridiagonal)				$(SOURCES_tridiagonal)				$(VALPARAM_tridiagonal)				$(KERNEL_tridiagonal)			-o $(BUILD_FOLDER)$(PREFIX)tridiagonal$(EXTENSION)
 
 vectoradd_sample: mkdir
 	$(call chdir,NVIDIA_GPU_Computing_SDK/OpenCL/src/oclVectorAdd/)
@@ -437,10 +437,10 @@ clean:
 	rm -rf bin/
 	mkdir -p bin/
 	mkdir -p tmp/
-	cp js/memoryprofiler.js tmp/ && cp js/settings.js tmp/ && cp js/index.html tmp/
+	cp js/memoryprofiler.js tmp/ && cp js/settings.js tmp/ && cp js/index.html tmp/ && cp js/node_index.js tmp/
 	rm -rf js/
 	mkdir js/
-	cp tmp/memoryprofiler.js js/ && cp tmp/settings.js js/ && cp tmp/index.html js/
+	cp tmp/memoryprofiler.js js/ && cp tmp/settings.js js/ && cp tmp/index.html js/ && cp tmp/node_index.js js/
 	rm -rf tmp/
 	$(EMSCRIPTEN_ROOT)/emcc --clear-cache
-	
+
